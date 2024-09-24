@@ -1,0 +1,130 @@
+@startuml
+package "model" {
+
+    class Match {
+        - int id
+        - Date date
+        - int totalSets
+        - ArrayList<Set> setsPlayed
+        - Player playerService
+        - Player playerRest
+        - Game currentGame
+        - TieBreak currentTieBreak
+
+        + Match(int totalSets, Player playerService, Player playerRest)
+        (+ getPlayers(): List<Player>
+        + getSets(): List<Set>)
+        + startNewGame()
+        + startTieBreak()
+        + isMatchOver(): boolean
+        + getMatchScore(): String
+    }
+
+    class Referee {
+        - int id
+        - String name
+        - String password
+
+        + Referee(int id, String name, String password)
+        + getName()
+        + authenticate(String password): boolean
+    }
+
+    class Player {
+        - int id
+        - String name
+        - int currentPoints
+        - boolean isServing
+        - int[] gamesWonPerSet
+
+        + Player(int id, String name)
+        + getName()
+        + getCurrentPoints()
+        + getGamesWonPerSet(int setIndex)
+        + winGamePerSet(int setIndex)
+        ## + isServing()
+        + scorePoint()
+        + resetPoints()
+        ##+ resetPlayerState()
+    }
+
+    class Set {
+        - int playerServiceGamesWon
+        - int playerRestGamesWon
+        - boolean tieBreakActive
+
+        + Set()
+        + getPlayerServiceGamesWon(): int
+        + getPlayerRestGamesWon(): int
+        + playerServiceWinGame()
+        + playerRestWinGame()
+        + isSetOver(): boolean
+        + isTieBreakRequired(): boolean
+        + getSetScore(): String
+    }
+
+    class Game {
+        - Player playerService
+        - Player playerRest
+
+        + Game(Player playerService, Player playerRest)
+        + addPoint(Player player)
+        + checkGameWinner()
+        + resetPoints()
+
+    }
+
+    class TieBreak extends Game{
+
+        + TieBreak(Player playerService, Player playerRest)
+        + addPoint(Player player)
+        + checkTieBreakWinner()
+    }
+}
+
+package "view" {
+    class MatchView {
+        + displayMatchScore(MatchController matchController): void
+        + promptCommand()
+        + displayPlayerCreated(Player player)
+        + displayRefereeCreated(Referee referee)
+        + displayLoginStatus(boolean success)
+    }
+}
+
+package "controller" {
+    class MatchController {
+        - Match match
+
+        + MatchController()
+        + createMatch(int totalSets, Player playerService, Player playerRest)
+        + addPointToPlayerService()
+        + addPointToPlayerRest()
+        + getMatchScore(): String
+    }
+
+    class PlayerController {
+        - ArrayList<Player> players
+
+        + PlayerController()
+        + createPlayer(String name): Player
+        + getPlayerById(int id): Player
+        + getPlayers(): List<Player>
+    }
+
+    class RefereeController {
+        - ArrayList<Referee> referees
+        - Referee loggedReferee
+
+        + RefereeController()
+        + createReferee(String name, String password): Referee
+        + login(String name, String password): boolean
+        + logout()
+    }
+}
+
+"controller" ..> "model" : update
+"view" ..> "controller" : request
+"controller" ..> "view" : display
+
+@enduml
