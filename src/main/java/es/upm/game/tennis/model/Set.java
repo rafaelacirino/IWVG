@@ -36,7 +36,7 @@ public class Set {
         return playerServiceGamesWon == 6 && playerRestGamesWon == 6;
     }
 
-    public String getSetScore() {
-        return playerServiceGamesWon + " - " + playerRestGamesWon;
-    }
+//    public String getSetScore() {
+//        return playerServiceGamesWon + " - " + playerRestGamesWon;
+//    }
 }

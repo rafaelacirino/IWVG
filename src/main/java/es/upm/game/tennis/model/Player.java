@@ -12,7 +12,7 @@ public class Player {
         this.id = id;
         this.name = name;
         this.currentPoints = 0;
-        this.gamesWonPerSet = new int[10]; // Assuming a maximum of 10 sets
+        this.gamesWonPerSet = new int[5];
     }
 
     public String getName() {

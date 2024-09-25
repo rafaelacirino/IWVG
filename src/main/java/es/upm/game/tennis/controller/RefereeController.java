@@ -8,7 +8,6 @@ import java.util.List;
 public class RefereeController {
 
     private List<Referee> referees;
-    private Referee loggedReferee;
 
     public RefereeController() {
         referees = new ArrayList<>();
@@ -23,14 +22,14 @@ public class RefereeController {
     public boolean login(String name, String password) {
         for (Referee referee : referees) {
             if (referee.getName().equals(name) && referee.authenticate(password)) {
-                loggedReferee = referee;
                 return true;
             }
         }
         return false;
     }
 
-    public void logout() {
-        loggedReferee = null;
+    private boolean isDuplicate(String name, String password) {
+        return referees.stream()
+                .anyMatch(referee -> referee.getName().equals(name) && referee.authenticate(password));
     }
 }

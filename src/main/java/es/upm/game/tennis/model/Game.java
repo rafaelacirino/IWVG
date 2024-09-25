@@ -30,14 +30,28 @@ public class Game {
 
     public void addPoint(Player player) {
         player.scorePoint();
-        checkGameWinner(player);
     }
 
-    public void checkGameWinner(Player player) {
-        if (player.getCurrentPoints() >= 4) {
-            player.winGamePerSet(0); // Atualiza o set atual, exemplo.
-            resetPoints();
-        }
+//    public void checkGameWinner(Player player) {
+//        Player opponent = (player == playerService) ? playerRest : playerService;
+//
+//        if (player.getCurrentPoints() >= 4 && opponent.getCurrentPoints() < 3) {
+//                player.winGamePerSet(0);
+//                resetPoints();
+//            }
+//    }
+
+    public boolean isGameOver() {
+        return checkGameWinner(playerService) || checkGameWinner(playerRest);
+    }
+
+    private boolean checkGameWinner(Player player) {
+        return player.getCurrentPoints() >= 4 &&
+                (player.getCurrentPoints() - getOpponent(player).getCurrentPoints() >= 2);
+    }
+
+    private Player getOpponent(Player player) {
+        return (player == playerService) ? playerRest : playerService;
     }
 
     public void resetPoints() {

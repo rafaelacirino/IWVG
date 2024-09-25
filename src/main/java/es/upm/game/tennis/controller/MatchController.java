@@ -13,10 +13,12 @@ public class MatchController {
 
     public MatchController(Match match) {
         this.match = match;
-        startNewGame(); // Começa o primeiro game automaticamente
+        startNewGame();
     }
 
-    public void createMatch(int totalSets, Player playerService, Player playerRest) {
+    public void createMatch(int totalSets, Player player1, Player player2) {
+        Player playerService = Math.random() < 0.5 ? player1 : player2;
+        Player playerRest = playerService == player1 ? player2 : player1;
         match = new Match(totalSets, playerService, playerRest);
     }
 
@@ -29,11 +31,20 @@ public class MatchController {
     }
 
     public void addPointToServer() {
-        currentGame.addPoint(match.getPlayers().get(0)); // Adiciona ponto ao jogador que serve
+        currentGame.addPoint(match.getPlayers().get(0));
+        checkGameEndAndSwitchRoles();
     }
 
     public void addPointToReceiver() {
-        currentGame.addPoint(match.getPlayers().get(1)); // Adiciona ponto ao jogador que recebe
+        currentGame.addPoint(match.getPlayers().get(1));
+        checkGameEndAndSwitchRoles();
+    }
+
+    private void checkGameEndAndSwitchRoles() {
+        if (currentGame.isGameOver()) {
+            match.switchRoles();
+            startNewGame();
+        }
     }
 
     public boolean isMatchOver() {

@@ -80,6 +80,11 @@ package "model" {
         + addPoint(Player player)
         + checkTieBreakWinner()
     }
+
+    class GameFactory {
+        + createGame(Player playerService, Player playerRest): Game
+        + createTieBreak(Player playerService, Player playerRest): TieBreak
+    }
 }
 
 package "view" {
@@ -119,7 +124,6 @@ package "controller" {
         + RefereeController()
         + createReferee(String name, String password): Referee
         + login(String name, String password): boolean
-        + logout()
     }
 }
 
