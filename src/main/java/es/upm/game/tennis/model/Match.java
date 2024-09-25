@@ -3,6 +3,7 @@ package es.upm.game.tennis.model;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Match {
 
@@ -12,6 +13,7 @@ public class Match {
     private ArrayList<Set> setsPlayed;
     private Player playerService;
     private Player playerRest;
+    private boolean isPlayerService;
     private Game currentGame;
 
     public Match() {
@@ -24,21 +26,21 @@ public class Match {
         this.setsPlayed = new ArrayList<>();
         this.date = new Date();
         startNewGame();
-   }
-
-    public void startNewGame() {
-        this.currentGame = new Game(playerService, playerRest);
-    }
-
-    public Game getCurrentGame() {
-        return this.currentGame;
     }
 
     public int getId() {
         return id;
     }
 
-    public String getDateFormatted() {
+    public Game getCurrentGame() {
+        return currentGame;
+    }
+
+    public void startNewGame() {
+        this.currentGame = new Game(playerService, playerRest);
+    }
+
+    public String getDate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         return dateFormat.format(date);
     }
@@ -51,14 +53,36 @@ public class Match {
         return playerRest;
     }
 
+    public List<Player> getPlayers() {
+        List<Player> players = new ArrayList<>();
+        players.add(playerService);
+        players.add(playerRest);
+        return players;
+    }
+
+    public List<Set> getSets() {
+        return setsPlayed;
+    }
+
+    public void addSet(Set set) {
+        setsPlayed.add(set);
+    }
+
     public boolean isMatchOver() {
         return setsPlayed.size() >= totalSets && setsPlayed.get(setsPlayed.size() - 1).isSetOver();
     }
 
     public String getMatchScore() {
+        String currentServer = isPlayerService ? "*" : " ";
+        String currentReceiver = !isPlayerService ? "*" : " ";
+
+
+        StringBuilder scoreBuilder = new StringBuilder();
+        scoreBuilder.append(String.format("%s %s: %s%n", currentServer, playerService.getName(), playerService.getCurrentPoints()))
+                .append(String.format("%s %s: %s%n", currentReceiver, playerRest.getName(), playerRest.getCurrentPoints()));
 
         return String.format("id: %d %n", getId()) +
-                String.format("date: %s %n", getDateFormatted()) +
+                String.format("date: %s %n", getDate()) +
                 String.format("* %s: %s - - - %n",
                         playerService.getName(), playerService.getCurrentPoints()) +
                 String.format("%s: %s - - - %n",
@@ -66,6 +90,7 @@ public class Match {
     }
 
     public void switchRoles() {
+        isPlayerService = !isPlayerService;
         Player temp = playerService;
         playerService = playerRest;
         playerRest = temp;

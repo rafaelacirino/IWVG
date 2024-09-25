@@ -22,10 +22,6 @@ public class MatchView {
         logger.info(matchScore);
     }
 
-    public void promptCommand() {
-        logger.info("> ");
-    }
-
     public void displayRefereeCreated(Referee referee) {
         logger.info("Referee created: " + referee.getName());
     }

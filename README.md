@@ -3,4 +3,6 @@
 ## Rafaela Borba Falcão Cirino
 ## Yanran Ye
 
-![DiagramSecuencia](/docs/diagrams/MVC.svg)
+![DiagramDomainModel](/docs/diagrams/DomainModel.svg)
+![DiagramClass](/docs/diagrams/ClassDiagram.svg)
+![DiagramMVC](/docs/diagrams/MVC.svg)

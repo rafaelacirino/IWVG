@@ -1,0 +1,32 @@
+@startuml
+
+class Match
+class Player
+class Referee
+class ScoreBoard
+class Set
+class Game
+class StandardGame
+class TieBreakGame
+class Point
+class Fault
+
+Match *-down-> "2" Player
+Match *-down-> "3|5" Set
+Match *-down-> Referee
+Match *-down-> ScoreBoard
+
+Referee -down-> Point
+
+Set *-down-> "6..13" Game
+
+Game <|-down- StandardGame
+Game <|-down- TieBreakGame
+
+StandardGame *-down-> "4...+" Point
+TieBreakGame *-down-> "6...+" Point
+
+Fault -down-> "0..2" Point
+
+
+@enduml

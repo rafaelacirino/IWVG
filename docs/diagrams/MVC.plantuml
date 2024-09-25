@@ -8,12 +8,14 @@ package "model" {
         - ArrayList<Set> setsPlayed
         - Player playerService
         - Player playerRest
-        - Game currentGame
-        - TieBreak currentTieBreak
 
-        + Match(int totalSets, Player playerService, Player playerRest)
-        (+ getPlayers(): List<Player>
-        + getSets(): List<Set>)
+        + Match(int id, int totalSets, Player playerService, Player playerRest)
+        + getId(): int
+        + getDate(): String
+        + getPlayerService(): Player
+        + getPlayerRest(): Player
+        + getPlayers(): List<Player>
+        + getSets(): List<Set>
         + startNewGame()
         + startTieBreak()
         + isMatchOver(): boolean
