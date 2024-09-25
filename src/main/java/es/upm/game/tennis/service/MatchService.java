@@ -73,13 +73,11 @@ public class MatchService {
     }
 
     public void lackService() {
-        // Se o jogador atual que está servindo é conhecido
+
         if (currentServer != null) {
-            // Exibir mensagem de falta de serviço
             System.out.println("Lack of service by: " + currentServer.getName());
 
-            // Mudar o jogador que está servindo e o que está recebendo
-            switchPlayers(); // Método que troca os papéis de server e receiver
+            switchPlayers();
 
         } else {
             System.out.println("No player is currently serving.");
