@@ -4,11 +4,15 @@ import es.upm.game.tennis.model.Game;
 import es.upm.game.tennis.model.Match;
 import es.upm.game.tennis.model.Player;
 
+import java.util.logging.Logger;
+
 public class MatchService {
 
     private Match match;
     private Player currentServer;
     private Player currentReceiver;
+    private static final Logger logger = Logger.getLogger(MatchService.class.getName());
+
 
     public MatchService(Match match) {
         this.match = match;
@@ -75,12 +79,12 @@ public class MatchService {
     public void lackService() {
 
         if (currentServer != null) {
-            System.out.println("Lack of service by: " + currentServer.getName());
+            logger.info("Lack of service by: " + currentServer.getName());
 
             switchPlayers();
 
         } else {
-            System.out.println("No player is currently serving.");
+            logger.info("No player is currently serving.");
         }
     }
 

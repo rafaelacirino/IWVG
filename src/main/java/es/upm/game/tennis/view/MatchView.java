@@ -13,17 +13,17 @@ public class MatchView {
     private Scanner scanner;
 
     public void displayInitialMatch(String matchScore) {
-        System.out.println("Initial Match Score:");
-        System.out.println(matchScore);
+        logger.info("Initial Match Score:");
+        logger.info(matchScore);
     }
 
     public void displayMatchScore(String matchScore) {
-        System.out.println("Current Match Score:");
-        System.out.println(matchScore);
+        logger.info("Current Match Score:");
+        logger.info(matchScore);
     }
 
     public void promptCommand() {
-        System.out.print("> ");
+        logger.info("> ");
     }
 
     public void displayRefereeCreated(Referee referee) {
@@ -61,12 +61,12 @@ public class MatchView {
     }
 
     public String readPlayerName(int playerNumber) {
-        System.out.println("Enter name of Player " + playerNumber + ":");
+        logger.info("Enter name of Player " + playerNumber + ":");
         return scanner.nextLine();
     }
 
     public int readTotalSets() {
-        System.out.println("Enter total number of sets:");
+        logger.info("Enter total number of sets:");
         return scanner.nextInt();
     }
 
@@ -76,13 +76,13 @@ public class MatchView {
     }
 
     public void displayPlayers(Player playerService, Player playerRest) {
-        System.out.println("Current Players in the Match:");
-        System.out.println("Server: " + playerService.getName());
-        System.out.println("Receiver: " + playerRest.getName());
+        logger.info("Current Players in the Match:");
+        logger.info("Server: " + playerService.getName());
+        logger.info("Receiver: " + playerRest.getName());
     }
 
     public void displayLackService(Player playerService) {
         logger.info("Lack of service by: " + playerService.getName());
-        System.out.println("Lack of service by: " + playerService.getName());
+        logger.info("Lack of service by: " + playerService.getName());
     }
 }
