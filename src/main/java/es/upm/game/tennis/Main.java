@@ -5,9 +5,8 @@ import es.upm.game.tennis.model.Player;
 import es.upm.game.tennis.model.Referee;
 import es.upm.game.tennis.view.MatchView;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 public class Main {
@@ -21,6 +20,9 @@ public class Main {
 
     private static final Scanner scanner = new Scanner(System.in);
 
+    private static boolean isLoggedIn = false;
+    private static boolean isMatchCreated = false;
+
     private static String getInput(String promptMessage) {
         logger.info(promptMessage);
         return scanner.nextLine();
@@ -33,16 +35,24 @@ public class Main {
         return number;
     }
 
+    private static final Map<String, Consumer<MatchController>> pointActions = new HashMap<>();
+
+    static {
+        pointActions.put("lackService", MatchController::addPointToReceiver);
+        pointActions.put("pointService", MatchController::addPointToServer);
+        pointActions.put("pointRest", MatchController::addPointToReceiver);
+    }
+
     public static void main(String[] args) {
-        MatchView matchView = new MatchView();
-        MatchController matchController = new MatchController();
-        PlayerController playerController = new PlayerController();
-        RefereeController refereeController = new RefereeController();
+        MatchView matchView = MatchView.getInstance();
+        MatchController matchController = new MatchController(matchView);
+        PlayerController playerController = new PlayerController(matchView);
+        RefereeController refereeController = new RefereeController(matchView);
 
         boolean running = true;
 
         while (running) {
-            matchView.promptCommand();
+            System.out.print("> ");
             String command = scanner.nextLine();
 
             switch (command) {
@@ -50,20 +60,20 @@ public class Main {
                     String refName = getInput(ENTER_REFEREE_NAME);
                     String refPassword = getInput(ENTER_REFEREE_PASSWORD);
                     Referee referee = refereeController.createReferee(refName, refPassword);
-                    matchView.displayRefereeCreated(referee);
+                    refereeController.getDisplayRefereeCreated(referee);
                     break;
 
                 case "login":
                     String loginName = getInput(ENTER_REFEREE_NAME);
                     String loginPassword = getInput(ENTER_REFEREE_PASSWORD);
-                    boolean success = refereeController.login(loginName, loginPassword);
-                    matchView.displayLoginStatus(success);
+                    isLoggedIn = refereeController.login(loginName, loginPassword);
+                    refereeController.getDisplayLoginStatus(isLoggedIn);
                     break;
 
                 case "createPlayer":
                     String playerName = getInput(ENTER_PLAYER_NAME);
                     Player player = playerController.createPlayer(playerName);
-                    matchView.displayPlayerCreated(player);
+                    playerController.getDisplayPlayerCreated(player);
                     break;
 
                 case "readPlayers":
@@ -84,6 +94,11 @@ public class Main {
                     break;
 
                 case "createMatch":
+                    if (!isLoggedIn) {
+                        logger.warning("No referee logged in");
+                        break;
+                    }
+
                     int totalSets = getInputNumber(ENTER_TOTAL_SETS);
                     int id1 = getInputNumber(ENTER_PLAYER_ID);
                     int id2 = getInputNumber(ENTER_PLAYER_ID);
@@ -95,32 +110,25 @@ public class Main {
                         Player player1 = playerId1.get();
                         Player player2 = playerId2.get();
                         matchController.createMatch(totalSets, player1, player2);
-                        matchView.displayInitialMatch(matchController);
+                        matchController.getDisplayMatchInitial();
                     } else {
                         logger.warning("One or both players not found.");
                     }
                     break;
 
                 case "lackService":
-                    matchController.addPointToReceiver();
-                    matchView.displayMatchScore(matchController.getMatchScore());
-                    break;
-
                 case "pointService":
-                    matchController.addPointToServer();
-                    matchView.displayMatchScore(matchController.getMatchScore());
-                    break;
-
                 case "pointRest":
-                    matchController.addPointToReceiver();
-                    matchView.displayMatchScore(matchController.getMatchScore());
+                    if (!isMatchCreated) {
+                        logger.warning("Must create a match before adding points");
+                        break;
+                    }
+                    pointActions.get(command).accept(matchController);
+                    matchController.getDisplayMatchScore();
                     break;
 
                 case "readMatch":
-                    logger.info("Enter match ID: ");
-                    int matchId = scanner.nextInt();
-                    String matchScore = matchController.getMatchScore();
-                    logger.info("Match Score: " + matchScore);
+                    matchController.getDisplayMatchResult();
                     break;
 
                 case "logout":

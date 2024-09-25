@@ -1,6 +1,7 @@
 package es.upm.game.tennis.view;
 
 import es.upm.game.tennis.controller.MatchController;
+import es.upm.game.tennis.model.Match;
 import es.upm.game.tennis.model.Player;
 import es.upm.game.tennis.model.Referee;
 
@@ -10,22 +11,53 @@ import java.util.logging.Logger;
 public class MatchView {
 
     private static final Logger logger = Logger.getLogger(MatchView.class.getName());
+    private Match match;
+    private static MatchView instance;
 
-    public void displayInitialMatch(MatchController matchController) {
-        String matchScore = matchController.getMatchScore();
+    private MatchView() {
+    }
+
+    public static MatchView getInstance() {
+        if (instance == null) {
+            instance = new MatchView();
+        }
+        return instance;
+    }
+
+    public void setMatch(Match match) {
+        this.match = match;
+    }
+
+    public void displayMatchInitial() {
+        StringBuilder matchScore = new StringBuilder();
+        matchScore.append(String.format("id: %d%n", match.getId()))
+                .append(String.format("date: %s%n", match.getDate()))
+                .append(match.getMatchScore());
         if (logger.isLoggable(Level.INFO)) {
-            logger.info(String.format("Current Match Score:%n%s", matchScore));
+            logger.info(String.format("Init Match:%n%s", matchScore));
         }
     }
 
-    public void displayMatchScore(String matchScore) {
-        if (logger.isLoggable(Level.INFO)) {
-            logger.info(String.format("Current Match Score: %s", matchScore));
+    public void displayMatchScore() {
+        if (match != null) {
+            String matchScore = match.getMatchScore();
+            if (logger.isLoggable(Level.INFO)) {
+                logger.info(String.format("Current Match Score: %s", matchScore));
+            }
+        } else {
+            logger.warning("The match has not started yet");
         }
     }
 
-    public void promptCommand() {
-        System.out.print("> ");
+    public void displayMatchResult() {
+        if (match != null) {
+            String matchScore = match.getMatchScore();
+            if (logger.isLoggable(Level.INFO)) {
+                logger.info(String.format("Results Match:%n%s", matchScore));
+            }
+        } else {
+            logger.warning("The match has not started yet");
+        }
     }
 
     public void displayPlayerCreated(Player player) {

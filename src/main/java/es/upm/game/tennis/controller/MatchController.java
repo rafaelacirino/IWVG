@@ -1,25 +1,31 @@
 package es.upm.game.tennis.controller;
 
 import es.upm.game.tennis.model.*;
+import es.upm.game.tennis.view.MatchView;
 
 public class MatchController {
 
     private Match match;
     private Game currentGame;
     private TieBreak currentTieBreak;
+    private int idNumber = 0;
+    private MatchView matchView;
 
-    public MatchController() {
+    public MatchController(MatchView matchView) {
+        this.matchView = matchView;
     }
 
-    public MatchController(Match match) {
+    public MatchController(Match match, MatchView matchView) {
         this.match = match;
+        this.matchView = matchView;
         startNewGame();
     }
 
     public void createMatch(int totalSets, Player player1, Player player2) {
         Player playerService = Math.random() < 0.5 ? player1 : player2;
         Player playerRest = playerService == player1 ? player2 : player1;
-        match = new Match(totalSets, playerService, playerRest);
+        match = new Match(idNumber++, totalSets, playerService, playerRest);
+        matchView.setMatch(match);
     }
 
     public void startNewGame() {
@@ -57,5 +63,17 @@ public class MatchController {
 
     public void addSetToMatch(Set set) {
         match.addSet(set);
+    }
+
+    public void getDisplayMatchInitial() {
+        matchView.displayMatchInitial();
+    }
+
+    public void getDisplayMatchScore() {
+        matchView.displayMatchScore();
+    }
+
+    public void getDisplayMatchResult() {
+        matchView.displayMatchResult();
     }
 }
