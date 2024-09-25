@@ -16,30 +16,9 @@ public class Game {
         return playerService;
     }
 
-    public void setPlayerService(Player playerService) {
-        this.playerService = playerService;
-    }
-
-    public Player getPlayerRest() {
-        return playerRest;
-    }
-
-    public void setPlayerRest(Player playerRest) {
-        this.playerRest = playerRest;
-    }
-
     public void addPoint(Player player) {
         player.scorePoint();
     }
-
-//    public void checkGameWinner(Player player) {
-//        Player opponent = (player == playerService) ? playerRest : playerService;
-//
-//        if (player.getCurrentPoints() >= 4 && opponent.getCurrentPoints() < 3) {
-//                player.winGamePerSet(0);
-//                resetPoints();
-//            }
-//    }
 
     public boolean isGameOver() {
         return checkGameWinner(playerService) || checkGameWinner(playerRest);
@@ -52,10 +31,5 @@ public class Game {
 
     private Player getOpponent(Player player) {
         return (player == playerService) ? playerRest : playerService;
-    }
-
-    public void resetPoints() {
-        playerService.resetPoints();
-        playerRest.resetPoints();
     }
 }

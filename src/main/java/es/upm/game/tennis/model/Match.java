@@ -3,7 +3,6 @@ package es.upm.game.tennis.model;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class Match {
 
@@ -13,6 +12,10 @@ public class Match {
     private ArrayList<Set> setsPlayed;
     private Player playerService;
     private Player playerRest;
+    private Game currentGame;
+
+    public Match() {
+    }
 
     public Match(int totalSets, Player playerService, Player playerRest) {
         this.totalSets = totalSets;
@@ -20,6 +23,15 @@ public class Match {
         this.playerRest = playerRest;
         this.setsPlayed = new ArrayList<>();
         this.date = new Date();
+        startNewGame();
+   }
+
+    public void startNewGame() {
+        this.currentGame = new Game(playerService, playerRest);
+    }
+
+    public Game getCurrentGame() {
+        return this.currentGame;
     }
 
     public int getId() {
@@ -39,36 +51,18 @@ public class Match {
         return playerRest;
     }
 
-    public List<Player> getPlayers() {
-        List<Player> players = new ArrayList<>();
-        players.add(playerService);
-        players.add(playerRest);
-        return players;
-    }
-
-    public List<Set> getSets() {
-        return setsPlayed;
-    }
-
-    public void addSet(Set set) {
-        setsPlayed.add(set);
-    }
-
     public boolean isMatchOver() {
         return setsPlayed.size() >= totalSets && setsPlayed.get(setsPlayed.size() - 1).isSetOver();
     }
 
     public String getMatchScore() {
-        StringBuilder scoreBuilder = new StringBuilder();
-        scoreBuilder.append(String.format("id: %d\n", getId()));
-        scoreBuilder.append(String.format("date: %s\n", getDateFormatted()));
 
-        scoreBuilder.append(String.format("* %s: %s - - - \n",
-                playerService.getName(), playerService.getCurrentPoints()));
-        scoreBuilder.append(String.format("%s: %s - - - \n",
-                playerRest.getName(), playerRest.getCurrentPoints()));
-
-        return scoreBuilder.toString();
+        return String.format("id: %d %n", getId()) +
+                String.format("date: %s %n", getDateFormatted()) +
+                String.format("* %s: %s - - - %n",
+                        playerService.getName(), playerService.getCurrentPoints()) +
+                String.format("%s: %s - - - %n",
+                        playerRest.getName(), playerRest.getCurrentPoints());
     }
 
     public void switchRoles() {
