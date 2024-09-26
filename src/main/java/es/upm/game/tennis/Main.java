@@ -4,7 +4,7 @@ import es.upm.game.tennis.controller.*;
 import es.upm.game.tennis.model.Match;
 import es.upm.game.tennis.model.Player;
 import es.upm.game.tennis.model.Referee;
-import es.upm.game.tennis.service.MatchService;
+import es.upm.game.tennis.controller.ScoreController;
 import es.upm.game.tennis.view.MatchView;
 
 import java.util.Scanner;
@@ -52,13 +52,13 @@ public class Main {
         PlayerController playerController = new PlayerController();
         RefereeController refereeController = new RefereeController();
         Match match = new Match();
-        MatchService matchService = new MatchService(match);
+        ScoreController scoreController = new ScoreController(match);
         MatchController matchController = null;
 
         boolean running = true;
 
         while (running) {
-            System.out.print("> ");
+            logger.info("> ");
             String command = scanner.nextLine();
 
             switch (command) {
@@ -114,36 +114,34 @@ public class Main {
 
                     if (player1 != null && player2 != null) {
                         Match newMatch = new Match(totalSets, player1, player2);
-                        matchController = new MatchController(newMatch, matchView, matchService);
+                        matchController = new MatchController(newMatch, matchView, scoreController);
                         matchController.createMatch(totalSets, player1, player2);
-                        matchController.getDisplayMatch();
+                        matchController.getInitialMatch();
                         isMatchCreated = true;
                     } else {
                         logger.warning("One or both players not found.");
                     }
                     break;
 
-                case "lackService":
-                case "pointService":
-                case "pointRest":
+                case "lackService", "pointService", "pointRest":
                     if (!isMatchCreated) {
                         logger.warning("Must create a match before adding points");
                         break;
                     }
                     pointActions.get(command).accept(matchController);
-                    matchController.displayScore();
+                    matchController.getDisplayMatchScore();
                     break;
 
                 case "displayScore":
                     if (matchController != null) {
-                        matchController.displayScore();
+                        matchController.getDisplayMatchScore();
                     } else {
-                        System.out.println("No match is active.");
+                        logger.info("No match is active.");
                     }
                     break;
 
                 case "readMatch":
-                    matchView.displayMatchResult(matchService);
+                    matchView.displayMatchResult(scoreController);
                     break;
 
                 case "logout":

@@ -1,6 +1,7 @@
 package es.upm.game.tennis.model;
 
 public class TieBreak extends Game {
+
     private int playerServicePoints;
     private int playerRestPoints;
 

@@ -5,14 +5,11 @@ public class Player {
     private final int id;
     private final String name;
     private int currentPoints;
-    private boolean isServing;
-    private final int[] gamesWonPerSet;
 
     public Player(int id, String name) {
         this.id = id;
         this.name = name;
         this.currentPoints = 0;
-        this.gamesWonPerSet = new int[5];
     }
 
     public String getName() {
