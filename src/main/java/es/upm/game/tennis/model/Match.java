@@ -81,12 +81,7 @@ public class Match {
         scoreBuilder.append(String.format("%s %s: %s%n", currentServer, playerService.getName(), playerService.getCurrentPoints()))
                 .append(String.format("%s %s: %s%n", currentReceiver, playerRest.getName(), playerRest.getCurrentPoints()));
 
-        return String.format("id: %d %n", getId()) +
-                String.format("date: %s %n", getDate()) +
-                String.format("* %s: %s - - - %n",
-                        playerService.getName(), playerService.getCurrentPoints()) +
-                String.format("%s: %s - - - %n",
-                        playerRest.getName(), playerRest.getCurrentPoints());
+        return scoreBuilder.toString();
     }
 
     public void switchRoles() {

@@ -16,7 +16,10 @@ public class MatchController {
 
     public void createMatch(int totalSets, Player playerService, Player playerRest) {
         matchService.createMatch(totalSets, playerService, playerRest);
-        matchView.displayInitialMatch(matchService.getMatchScore());
+    }
+
+    public void getDisplayMatch() {
+        matchView.displayInitialMatch(matchService);
     }
 
     public void startMatch() {
@@ -34,25 +37,8 @@ public class MatchController {
         matchView.displayMatchStarted(player1, player2);
     }
 
-    public void pointToServer() {
-        matchService.pointService();
-        matchView.displayPointToServer(matchService.getCurrentServer());
-        if (matchService.isGameOver()) {
-            matchView.displayGameOver();
-        }
-    }
-
-    public void pointToReceiver() {
-        matchService.pointRest();
-        matchView.displayPointToReceiver(matchService.getCurrentReceiver());
-        if (matchService.isGameOver()) {
-            matchView.displayGameOver();
-        }
-    }
-
     public void displayScore() {
-        String score = matchService.getMatchScore();
-        matchView.displayMatchScore(score);
+        matchView.displayMatchScore(matchService);
     }
 
     public void readPlayers() {
