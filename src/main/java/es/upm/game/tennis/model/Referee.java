@@ -3,8 +3,8 @@ package es.upm.game.tennis.model;
 public class Referee {
 
     private int id;
-    private String name;
-    private String password;
+    private final String name;
+    private final String password;
 
     public Referee(int id, String name, String password) {
         this.id = id;

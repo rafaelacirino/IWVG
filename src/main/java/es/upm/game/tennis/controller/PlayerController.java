@@ -1,13 +1,17 @@
 package es.upm.game.tennis.controller;
 
 import es.upm.game.tennis.model.Player;
+import es.upm.game.tennis.view.MatchView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class PlayerController {
 
     private List<Player> players;
+    private MatchView matchView;
+
 
     public PlayerController() {
         players = new ArrayList<>();
@@ -19,14 +23,17 @@ public class PlayerController {
         return player;
     }
 
-    public Player getPlayerById(int id) {
+    public Optional<Player> getPlayerById(int id) {
         return players.stream()
                 .filter(player -> player.getId() == id)
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 
     public List<Player> getPlayers() {
         return players;
+    }
+
+    public void getDisplayPlayerCreated(Player player) {
+        matchView.displayPlayerCreated(player);
     }
 }

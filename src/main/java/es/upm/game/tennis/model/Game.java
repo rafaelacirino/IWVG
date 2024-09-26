@@ -16,32 +16,20 @@ public class Game {
         return playerService;
     }
 
-    public void setPlayerService(Player playerService) {
-        this.playerService = playerService;
-    }
-
-    public Player getPlayerRest() {
-        return playerRest;
-    }
-
-    public void setPlayerRest(Player playerRest) {
-        this.playerRest = playerRest;
-    }
-
     public void addPoint(Player player) {
         player.scorePoint();
-        checkGameWinner(player);
     }
 
-    public void checkGameWinner(Player player) {
-        if (player.getCurrentPoints() >= 4) {
-            player.winGamePerSet(0); // Atualiza o set atual, exemplo.
-            resetPoints();
-        }
+    public boolean isGameOver() {
+        return checkGameWinner(playerService) || checkGameWinner(playerRest);
     }
 
-    public void resetPoints() {
-        playerService.resetPoints();
-        playerRest.resetPoints();
+    private boolean checkGameWinner(Player player) {
+        return player.getCurrentPoints() >= 4 &&
+                (player.getCurrentPoints() - getOpponent(player).getCurrentPoints() >= 2);
+    }
+
+    private Player getOpponent(Player player) {
+        return (player == playerService) ? playerRest : playerService;
     }
 }

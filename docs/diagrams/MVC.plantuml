@@ -8,12 +8,14 @@ package "model" {
         - ArrayList<Set> setsPlayed
         - Player playerService
         - Player playerRest
-        - Game currentGame
-        - TieBreak currentTieBreak
 
-        + Match(int totalSets, Player playerService, Player playerRest)
-        (+ getPlayers(): List<Player>
-        + getSets(): List<Set>)
+        + Match(int id, int totalSets, Player playerService, Player playerRest)
+        + getId(): int
+        + getDate(): String
+        + getPlayerService(): Player
+        + getPlayerRest(): Player
+        + getPlayers(): List<Player>
+        + getSets(): List<Set>
         + startNewGame()
         + startTieBreak()
         + isMatchOver(): boolean
@@ -80,6 +82,11 @@ package "model" {
         + addPoint(Player player)
         + checkTieBreakWinner()
     }
+
+    class GameFactory {
+        + createGame(Player playerService, Player playerRest): Game
+        + createTieBreak(Player playerService, Player playerRest): TieBreak
+    }
 }
 
 package "view" {
@@ -119,7 +126,6 @@ package "controller" {
         + RefereeController()
         + createReferee(String name, String password): Referee
         + login(String name, String password): boolean
-        + logout()
     }
 }
 

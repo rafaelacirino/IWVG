@@ -1,0 +1,68 @@
+@startuml
+
+Match *-down-> "2" Player
+Match *-down-> "3|5" Set
+Match *-down-> Referee
+
+Referee -down-> Point
+
+Set *-down-> "6..13" Game
+
+Game <|-down- StandardGame
+Game <|-down- TieBreakGame
+
+StandardGame *-down-> "4...+" Point
+TieBreakGame *-down-> "6...+" Point
+
+
+
+class Match {
+- int id
+- Date date
+- int sets
+- Player winner
+
++ createMatch(int sets, int id1, int id2)
++ readPlayers()
++ determineWinner()
+}
+
+class Player {
+- int id
+- String name
+- setsWon
+- boolean playerOnService
+
++ createPlayer(String name)
++ winSet()
+}
+
+class Referee {
+- int id
+- String name
+
++ createReferee(String name)
++ awardPoint(Player)
++ callFault(Player)
+}
+
+class Set {
+- int numberSet
+- Player player1
+- Player player2
+- int setsWinPlayer1
+- int setsWinPlayer2
+- boolean tieBreak
++ createSet(int numberSet)
++ determineSetWinner()
+}
+
+class Game {
+- int
+
+}
+
+class TieBreakGame {
+}
+
+@enduml

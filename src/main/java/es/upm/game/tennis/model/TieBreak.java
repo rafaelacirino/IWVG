@@ -21,10 +21,10 @@ public class TieBreak extends Game {
 
     public boolean checkTieBreakWinner() {
         if (playerServicePoints >= 6 && playerServicePoints - playerRestPoints >= 2) {
-            return true; // Player service wins tie-break
+            return true;
         }
         if (playerRestPoints >= 6 && playerRestPoints - playerServicePoints >= 2) {
-            return true; // Player rest wins tie-break
+            return true;
         }
         return false;
     }
