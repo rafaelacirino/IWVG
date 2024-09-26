@@ -9,7 +9,7 @@ public class MatchController {
     private final MatchView matchView;
     private Match match;
 
-    public MatchController(Match match, MatchView matchView, ScoreController scoreController) {
+    public MatchController(Match match, MatchView matchView) {
         this.scoreController = new ScoreController(match);
         this.matchView = matchView;
     }

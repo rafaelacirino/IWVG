@@ -114,7 +114,7 @@ public class Main {
 
                     if (player1 != null && player2 != null) {
                         Match newMatch = new Match(totalSets, player1, player2);
-                        matchController = new MatchController(newMatch, matchView, scoreController);
+                        matchController = new MatchController(newMatch, matchView);
                         matchController.createMatch(totalSets, player1, player2);
                         matchController.getInitialMatch();
                         isMatchCreated = true;

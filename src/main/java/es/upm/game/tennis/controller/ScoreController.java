@@ -77,9 +77,7 @@ public class ScoreController {
     }
 
     private void givePointToOponent(){
-        int score = 0;
         if(currentServer.equals(playerService)){
-            score++;
             logger.info("Point awarded to: " + playerService.getName());
         }
     }

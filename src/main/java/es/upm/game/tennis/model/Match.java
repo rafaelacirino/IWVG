@@ -1,7 +1,6 @@
 package es.upm.game.tennis.model;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class Match {
