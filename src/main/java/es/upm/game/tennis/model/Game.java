@@ -5,6 +5,7 @@ public class Game {
     private Player playerService;
     private Player playerRest;
 
+
     public Game(Player playerService, Player playerRest) {
         this.playerService = playerService;
         this.playerRest = playerRest;

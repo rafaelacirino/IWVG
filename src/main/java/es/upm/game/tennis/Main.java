@@ -4,11 +4,12 @@ import es.upm.game.tennis.controller.*;
 import es.upm.game.tennis.model.Match;
 import es.upm.game.tennis.model.Player;
 import es.upm.game.tennis.model.Referee;
-import es.upm.game.tennis.service.MatchService;
+import es.upm.game.tennis.controller.ScoreController;
 import es.upm.game.tennis.view.MatchView;
 
 import java.util.Scanner;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 public class Main {
@@ -37,19 +38,27 @@ public class Main {
         return number;
     }
 
+    private static final Map<String, Consumer<MatchController>> pointActions = new HashMap<>();
+
+    static {
+        pointActions.put("lackService", MatchController::lackService);
+        pointActions.put("pointService", MatchController::pointService);
+        pointActions.put("pointRest", MatchController::pointRest);
+    }
+
     public static void main(String[] args) {
 
         MatchView matchView = new MatchView();
         PlayerController playerController = new PlayerController();
         RefereeController refereeController = new RefereeController();
         Match match = new Match();
-        MatchService matchService = new MatchService(match);
+        ScoreController scoreController = new ScoreController(match);
         MatchController matchController = null;
 
         boolean running = true;
 
         while (running) {
-            System.out.print("> ");
+            logger.info("> ");
             String command = scanner.nextLine();
 
             switch (command) {
@@ -83,6 +92,13 @@ public class Main {
                     );
                     break;
 
+                case "readPlayers":
+                    List<Player> players = playerController.getPlayers();
+                    for (Player p : players) {
+                        logger.info("Player ID: " + p.getId() + ", Name: " + p.getName());
+                    }
+                    break;
+
                 case "createMatch":
                     if (!isLoggedIn) {
                         logger.warning("No referee logged in");
@@ -98,71 +114,34 @@ public class Main {
 
                     if (player1 != null && player2 != null) {
                         Match newMatch = new Match(totalSets, player1, player2);
-                        matchController = new MatchController(newMatch, matchView, matchService);
+                        matchController = new MatchController(newMatch, matchView);
                         matchController.createMatch(totalSets, player1, player2);
+                        matchController.getInitialMatch();
+                        isMatchCreated = true;
                     } else {
                         logger.warning("One or both players not found.");
                     }
                     break;
 
-                case "readPlayers":
-                    matchController.readPlayers();
-                    break;
-
-                case "lackService":
-                    if (matchController != null) {
-                        matchController.lackService();
-                    } else {
-                        System.out.println("No match is active.");
+                case "lackService", "pointService", "pointRest":
+                    if (!isMatchCreated) {
+                        logger.warning("Must create a match before adding points");
+                        break;
                     }
-                    break;
-
-                case "pointService":
-                    if (matchController != null) {
-                        matchController.pointService();
-                    } else {
-                        System.out.println("No match is active.");
-                    }
-                    break;
-
-                case "pointRest":
-                    if (matchController != null) {
-                        matchController.pointRest();
-                    } else {
-                        System.out.println("No match is active.");
-                    }
-                    break;
-
-                case "addPointToServer":
-                    if (matchController != null) {
-                        matchController.pointToServer();
-                    } else {
-                        System.out.println("No match is active.");
-                    }
-                    break;
-
-                case "addPointToReceiver":
-                    if (matchController != null) {
-                        matchController.pointToReceiver();
-                    } else {
-                        System.out.println("No match is active.");
-                    }
+                    pointActions.get(command).accept(matchController);
+                    matchController.getDisplayMatchScore();
                     break;
 
                 case "displayScore":
                     if (matchController != null) {
-                        matchController.displayScore();
+                        matchController.getDisplayMatchScore();
                     } else {
-                        System.out.println("No match is active.");
+                        logger.info("No match is active.");
                     }
                     break;
 
-                case "endMatch":
-                    if (matchController != null && matchService.isGameOver()) {
-                        System.out.println("The match has ended.");
-                    } else {
-                        System.out.println("Match is still ongoing or no match has been started.");
-                    }
+                case "readMatch":
+                    matchView.displayMatchResult(scoreController);
                     break;
 
                 case "logout":
