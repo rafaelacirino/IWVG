@@ -2,135 +2,132 @@
 package "model" {
 
     class Match {
-        - int id
-        - Date date
-        - int totalSets
-        - ArrayList<Set> setsPlayed
-        - Player playerService
-        - Player playerRest
+    - Date date
+    - Player playerService
+    - Player playerRest
+    - boolean isPlayerService
+    - Game currentGame
 
-        + Match(int id, int totalSets, Player playerService, Player playerRest)
-        + getId(): int
-        + getDate(): String
-        + getPlayerService(): Player
-        + getPlayerRest(): Player
-        + getPlayers(): List<Player>
-        + getSets(): List<Set>
-        + startNewGame()
-        + startTieBreak()
-        + isMatchOver(): boolean
-        + getMatchScore(): String
+    + startNewGame()
+    + addSet(Set set)
+    + isMatchOver(): boolean
+    + getMatchScore(): String
+    + switchRoles()
     }
 
     class Referee {
-        - int id
-        - String name
-        - String password
+    - int id
+    - String name
+    - String password
 
-        + Referee(int id, String name, String password)
-        + getName()
-        + authenticate(String password): boolean
+    + authenticate(String password): boolean
     }
 
     class Player {
-        - int id
-        - String name
-        - int currentPoints
-        - boolean isServing
-        - int[] gamesWonPerSet
+    - int id
+    - String name
+    - int currentPoints
 
-        + Player(int id, String name)
-        + getName()
-        + getCurrentPoints()
-        + getGamesWonPerSet(int setIndex)
-        + winGamePerSet(int setIndex)
-        ## + isServing()
-        + scorePoint()
-        + resetPoints()
-        ##+ resetPlayerState()
+    + scorePoint()
     }
 
     class Set {
-        - int playerServiceGamesWon
-        - int playerRestGamesWon
-        - boolean tieBreakActive
+    - int playerServiceGamesWon
+    - int playerRestGamesWon
 
-        + Set()
-        + getPlayerServiceGamesWon(): int
-        + getPlayerRestGamesWon(): int
-        + playerServiceWinGame()
-        + playerRestWinGame()
-        + isSetOver(): boolean
-        + isTieBreakRequired(): boolean
-        + getSetScore(): String
+    + isSetOver()
     }
 
     class Game {
-        - Player playerService
-        - Player playerRest
+    - Player playerService
+    - Player playerRest
 
-        + Game(Player playerService, Player playerRest)
-        + addPoint(Player player)
-        + checkGameWinner()
-        + resetPoints()
-
+    + addPoint(Player player)
+    + isGameOver(): boolean
+    - checkGameWinner(Player): boolean
+    - getOpponent(Player player): Player
     }
 
-    class TieBreak extends Game{
+    class TieBreakGame {
+    - int playerServicePoints
+    - int playerRestPoints
 
-        + TieBreak(Player playerService, Player playerRest)
-        + addPoint(Player player)
-        + checkTieBreakWinner()
-    }
-
-    class GameFactory {
-        + createGame(Player playerService, Player playerRest): Game
-        + createTieBreak(Player playerService, Player playerRest): TieBreak
+    + addPoint(Player player)
+    + checkTieBreakWinner(): boolean
+    + getScore(): String
     }
 }
 
 package "view" {
     class MatchView {
-        + displayMatchScore(MatchController matchController): void
-        + promptCommand()
-        + displayPlayerCreated(Player player)
-        + displayRefereeCreated(Referee referee)
-        + displayLoginStatus(boolean success)
+
+    + displayInitialMatch(ScoreController scoreController)
+    + displayMatchScore(ScoreController scoreController)
+    + displayMatchResult(ScoreController scoreController)
+    + displayPlayerCreated(Player player)
+    + displayRefereeCreated(Referee referee)
+    + displayLoginStatus(boolean success)
+    + displayPointToServer(Player playerService)
+    + displayPointToReceiver(Player playerRest)
+    + displayLackService(Player playerService)
+    + displayGameOver()
+    + displaySetOver()
+    + displayMatchOver()
     }
 }
 
 package "controller" {
     class MatchController {
-        - Match match
+    - ScoreController scoreController
+    - MatchView matchView
+    - Match match
 
-        + MatchController()
-        + createMatch(int totalSets, Player playerService, Player playerRest)
-        + addPointToPlayerService()
-        + addPointToPlayerRest()
-        + getMatchScore(): String
+    + createMatch(int totalSets, Player playerService, Player playerRest)
+    + getDisplayInitialMatch()
+    + getDisplayMatchScore()
+    + lackService()
+    + pointService()
+    + pointRest()
     }
 
     class PlayerController {
-        - ArrayList<Player> players
+    - List<Player> players
 
-        + PlayerController()
-        + createPlayer(String name): Player
-        + getPlayerById(int id): Player
-        + getPlayers(): List<Player>
+    + createPlayer(String name): Player
+    + getPlayerById(int id): Player
+    + getPlayers(): List<Player>
     }
 
     class RefereeController {
-        - ArrayList<Referee> referees
-        - Referee loggedReferee
+    - ArrayList<Referee> referees
 
-        + RefereeController()
-        + createReferee(String name, String password): Referee
-        + login(String name, String password): boolean
+    + createReferee(String name, String password): Referee
+    + login(String name, String password): boolean
+    - isDuplicate(String name, String password)
+    }
+
+    class ScoreController {
+    - Match match
+    - Player currentServer
+    - Player playerService
+    - Player Player
+    - int lackServiceCount
+
+    + getMatch()
+    + checkGameEndAndSwitchRoles()
+    + pointService()
+    + pointRest()
+    + lackService()
+    + isGameOver(): boolean
+    - givePointToOponent()
+
     }
 }
 
-"controller" ..> "model" : update
-"view" ..> "controller" : request
+"controller" ..> "model" : request
 "controller" ..> "view" : display
+"view" ..> "controller" : request
+"model" ..> "controller" : send
+
 
 @enduml

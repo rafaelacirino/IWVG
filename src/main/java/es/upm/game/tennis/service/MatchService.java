@@ -18,6 +18,10 @@ public class MatchService {
         this.match = match;
     }
 
+    public Match getMatch() {
+        return match;
+    }
+
     public void createMatch(int totalSets, Player player1, Player player2) {
         Player playerService = Math.random() < 0.5 ? player1 : player2;
         Player playerRest = (playerService == player1) ? player2 : player1;

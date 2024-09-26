@@ -4,65 +4,66 @@ Match *-down-> "2" Player
 Match *-down-> "3|5" Set
 Match *-down-> Referee
 
-Referee -down-> Point
-
 Set *-down-> "6..13" Game
 
-Game <|-down- StandardGame
 Game <|-down- TieBreakGame
-
-StandardGame *-down-> "4...+" Point
-TieBreakGame *-down-> "6...+" Point
-
 
 
 class Match {
-- int id
-- Date date
-- int sets
-- Player winner
+- int totalSets
+- ArrayList<Set> setsPlayed
+- List<Player> players
+- boolean isPlayerService
+- Game currentGame
 
-+ createMatch(int sets, int id1, int id2)
-+ readPlayers()
-+ determineWinner()
++ startNewGame() **
++ addSet(Set set)
++ isMatchOver(): boolean
++ getMatchScore(): String
 }
 
 class Player {
 - int id
 - String name
-- setsWon
-- boolean playerOnService
+- int currentPoints **
+- int[] gamesWonPerSet ****
 
-+ createPlayer(String name)
-+ winSet()
++ scorePoint() **
 }
 
 class Referee {
 - int id
 - String name
+- String password
 
-+ createReferee(String name)
-+ awardPoint(Player)
-+ callFault(Player)
++ authenticate(String password): boolean
 }
 
 class Set {
-- int numberSet
-- Player player1
-- Player player2
-- int setsWinPlayer1
-- int setsWinPlayer2
-- boolean tieBreak
-+ createSet(int numberSet)
-+ determineSetWinner()
+- int numberSet ++
+- int playerServiceGamesWon
+- int playerRestGamesWon
+
++ isSetOver()
 }
 
 class Game {
-- int
+- Player playerService
+- Player playerRest
 
++ addPoint(Player player)
++ isGameOver(): boolean
+- checkGameWinner(Player): boolean
+- getOpponent(Player player): Player
 }
 
 class TieBreakGame {
+- int playerServicePoints
+- int playerRestPoints
+
++ addPoint(Player player)
++ checkTieBreakWinner(): boolean
++ getScore(): String
 }
 
 @enduml

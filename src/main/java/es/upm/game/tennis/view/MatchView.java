@@ -2,6 +2,7 @@ package es.upm.game.tennis.view;
 
 import es.upm.game.tennis.model.Player;
 import es.upm.game.tennis.model.Referee;
+import es.upm.game.tennis.service.MatchService;
 
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -12,14 +13,34 @@ public class MatchView {
     private static final Logger logger = Logger.getLogger(MatchView.class.getName());
     private Scanner scanner;
 
-    public void displayInitialMatch(String matchScore) {
-        logger.info("Initial Match Score:");
-        logger.info(matchScore);
+    public void displayInitialMatch(MatchService matchService) {
+        StringBuilder matchScore = new StringBuilder();
+        matchScore.append(String.format("id: %d%n", matchService.getMatch().getId()))
+                .append(String.format("date: %s%n", matchService.getMatch().getDate()))
+                .append(matchService.getMatch().getMatchScore());
+        logger.info(String.format("Init Match:%n%s", matchScore));
     }
 
-    public void displayMatchScore(String matchScore) {
-        logger.info("Current Match Score:");
-        logger.info(matchScore);
+    public void displayMatchScore(MatchService matchService) {
+        if (matchService.getMatch() != null) {
+            String matchScore = matchService.getMatch().getMatchScore();
+            if (logger.isLoggable(Level.INFO)) {
+                logger.info(String.format("Current Match Score: %s", matchScore));
+            }
+        } else {
+            logger.warning("The match has not started yet");
+        }
+    }
+
+    public void displayMatchResult(MatchService matchService) {
+        if (matchService.getMatch() != null) {
+            String matchScore = matchService.getMatch().getMatchScore();
+            if (logger.isLoggable(Level.INFO)) {
+                logger.info(String.format("Results Match:%n%s", matchScore));
+            }
+        } else {
+            logger.warning("The match has not started yet");
+        }
     }
 
     public void displayRefereeCreated(Referee referee) {
