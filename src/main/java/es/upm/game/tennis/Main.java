@@ -6,6 +6,9 @@ import es.upm.game.tennis.model.Player;
 import es.upm.game.tennis.model.Referee;
 import es.upm.game.tennis.controller.ScoreController;
 import es.upm.game.tennis.view.MatchView;
+import es.upm.game.tennis.view.PlayerView;
+import es.upm.game.tennis.view.RefereeView;
+import es.upm.game.tennis.view.ScoreView;
 
 import java.util.Scanner;
 import java.util.*;
@@ -49,6 +52,9 @@ public class Main {
     public static void main(String[] args) {
 
         MatchView matchView = new MatchView();
+        RefereeView refereeView = new RefereeView();
+        PlayerView playerView = new PlayerView();
+        ScoreView scoreView = new ScoreView();
         PlayerController playerController = new PlayerController();
         RefereeController refereeController = new RefereeController();
         Match match = new Match();
@@ -66,20 +72,20 @@ public class Main {
                     String refName = getInput(ENTER_REFEREE_NAME);
                     String refPassword = getInput(ENTER_REFEREE_PASSWORD);
                     Referee referee = refereeController.createReferee(refName, refPassword);
-                    matchView.displayRefereeCreated(referee);
+                    refereeView.displayRefereeCreated(referee);
                     break;
 
                 case "login":
                     String loginName = getInput(ENTER_REFEREE_NAME);
                     String loginPassword = getInput(ENTER_REFEREE_PASSWORD);
                     isLoggedIn = refereeController.login(loginName, loginPassword);
-                    matchView.displayLoginStatus(isLoggedIn);
+                    refereeView.displayLoginStatus(isLoggedIn);
                     break;
 
                 case "createPlayer":
                     String playerName = getInput(ENTER_PLAYER_NAME);
                     Player player = playerController.createPlayer(playerName);
-                    matchView.displayPlayerCreated(player);
+                    playerView.displayPlayerCreated(player);
                     break;
 
                 case "readPlayer":
@@ -114,7 +120,7 @@ public class Main {
 
                     if (player1 != null && player2 != null) {
                         Match newMatch = new Match(totalSets, player1, player2);
-                        matchController = new MatchController(newMatch, matchView);
+                        matchController = new MatchController(newMatch, matchView, scoreView);
                         matchController.createMatch(totalSets, player1, player2);
                         matchController.getInitialMatch();
                         isMatchCreated = true;

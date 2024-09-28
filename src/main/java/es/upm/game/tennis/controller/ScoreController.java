@@ -11,7 +11,6 @@ public class ScoreController {
     private Match match;
     private Player currentServer;
     private Player playerService;
-    private Player player;
     private int lackServiceCount = 0;
 
     private static final Logger logger = Logger.getLogger(ScoreController.class.getName());
@@ -34,6 +33,14 @@ public class ScoreController {
 
     public Player getCurrentServer() {
         return currentServer;
+    }
+
+    public void setPlayerService(Player playerService) {
+        this.playerService = playerService;
+    }
+
+    public void setCurrentServer(Player currentServer) {
+        this.currentServer = currentServer;
     }
 
     private void checkGameEndAndSwitchRoles() {
@@ -77,8 +84,9 @@ public class ScoreController {
     }
 
     private void givePointToOponent(){
-        if(currentServer.equals(playerService)){
-            logger.info("Point awarded to: " + playerService.getName());
-        }
+        Player opponent = currentServer.equals(playerService) ? match.getPlayerRest() : playerService;
+        Game currentGame = match.getCurrentGame();
+        currentGame.addPoint(opponent);
+        logger.info("Point awarded to: " + opponent.getName());
     }
 }

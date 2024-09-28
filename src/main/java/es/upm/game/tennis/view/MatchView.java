@@ -1,7 +1,6 @@
 package es.upm.game.tennis.view;
 
 import es.upm.game.tennis.model.Player;
-import es.upm.game.tennis.model.Referee;
 import es.upm.game.tennis.controller.ScoreController;
 
 import java.util.logging.Level;
@@ -40,33 +39,7 @@ public class MatchView {
         }
     }
 
-    public void displayRefereeCreated(Referee referee) {
-        logger.info("Referee created: " + referee.getName());
-    }
-
-    public void displayLoginStatus(boolean success) {
-        if (logger.isLoggable(Level.INFO)) {
-            logger.info(String.format("Login %s", success ? "successful" : "failed"));
-        }
-    }
-
     public void displayPlayerCreated(Player player) {
         logger.info("Player created: " + player.getName());
-    }
-
-    public void displayPointToServer(Player playerService) {
-        logger.info("Point to Server: " + playerService.getName());
-    }
-
-    public void displayPointToReceiver(Player playerRest) {
-        logger.info("Point to Receiver: " + playerRest.getName());
-    }
-
-    public void displayGameOver() {
-        logger.info("Game Over. Switching roles...");
-    }
-
-    public void displayLackService(Player playerService) {
-        logger.info("Lack of service by: " + playerService.getName());
     }
 }
