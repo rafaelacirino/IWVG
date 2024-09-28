@@ -1,0 +1,135 @@
+@startuml
+package "model" {
+
+    class Match {
+    - Date date
+    - List<Set> sets
+    - private int totalSets
+    - List<Player> players
+    - boolean isPlayer0Service
+    - ScoreBoard scoreBoard
+
+    + startNewGame()
+    + addSet(Set set)
+    + isMatchOver(): boolean
+    + getMatchScore(): String
+    + switchRoles()
+    }
+
+    class Referee {
+    - int id
+    - String name
+    - String password
+
+    + authenticate(String password): boolean
+    }
+
+    class Player {
+    - int id
+    - String name
+    }
+
+    class Set {
+    - int playerServiceGamesWon
+    - int playerRestGamesWon
+
+    + isSetOver()
+    }
+
+    class Game {
+    - Player playerService
+    - Player playerRest
+
+    + addPoint(Player player)
+    + isGameOver(): boolean
+    - checkGameWinner(Player): boolean
+    - getOpponent(Player player): Player
+    }
+
+    class TieBreakGame {
+    - int playerServicePoints
+    - int playerRestPoints
+
+    + addPoint(Player player)
+    + checkTieBreakWinner(): boolean
+    + getScore(): String
+    }
+
+    class ScoreBoard {
+    - Match match
+    }
+}
+
+package "view" {
+    class MatchView {
+
+    + displayInitialMatch()
+    + displayMatchScore()
+    + displayMatchResult()
+    + displayPlayerCreated(Player player)
+    + displayRefereeCreated(Referee referee)
+    + displayLoginStatus(boolean success)
+    + displayPointToServer(Player playerService)
+    + displayPointToReceiver(Player playerRest)
+    + displayLackService(Player playerService)
+    + displayGameOver()
+    + displaySetOver()
+    + displayMatchOver()
+    }
+}
+
+package "controller" {
+    class MatchController {
+    - ScoreController scoreController
+    - MatchView matchView
+    - Match match
+
+    + createMatch(int totalSets, Player playerService, Player playerRest)
+    + getDisplayInitialMatch()
+    + getDisplayMatchScore()
+    + lackService()
+    + pointService()
+    + pointRest()
+    }
+
+    class PlayerController {
+    - List<Player> players
+
+    + createPlayer(String name): Player
+    + getPlayerById(int id): Player
+    + getPlayers(): List<Player>
+    }
+
+    class RefereeController {
+    - ArrayList<Referee> referees
+
+    + createReferee(String name, String password): Referee
+    + login(String name, String password): boolean
+    - isDuplicate(String name, String password)
+    }
+
+    class ScoreController {
+    - Match match
+    - Player currentServer
+    - Player playerService
+    - Player Player
+    - int lackServiceCount
+
+    + getMatch()
+    + checkGameEndAndSwitchRoles()
+    + pointService()
+    + pointRest()
+    + lackService()
+    + isGameOver(): boolean
+    - givePointToOponent()
+
+    }
+}
+
+"controller" ..> "model" : request/update
+"controller" ..> "view" : send
+"view" ..> "controller" : display
+"model" ..> "controller" : send
+
+
+@enduml

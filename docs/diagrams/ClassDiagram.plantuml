@@ -1,22 +1,22 @@
 @startuml
 
-Match *-down-> "2" Player
+
 Match *-down-> "3|5" Set
 Match *-down-> Referee
+Match *-down-> ScoreBoard
 
 Set *-down-> "6..13" Game
 
 Game <|-down- TieBreakGame
-
+Game o-down-> "2" Player
 
 class Match {
-- int totalSets
-- ArrayList<Set> setsPlayed
-- List<Player> players
-- boolean isPlayerService
-- Game currentGame
+- String id
+- Date date
+- List<Set> sets
+- private int totalSets
+- ScoreBoard scoreBoard
 
-+ startNewGame() **
 + addSet(Set set)
 + isMatchOver(): boolean
 + getMatchScore(): String
@@ -25,10 +25,7 @@ class Match {
 class Player {
 - int id
 - String name
-- int currentPoints **
-- int[] gamesWonPerSet ****
 
-+ scorePoint() **
 }
 
 class Referee {
@@ -40,7 +37,6 @@ class Referee {
 }
 
 class Set {
-- int numberSet ++
 - int playerServiceGamesWon
 - int playerRestGamesWon
 
@@ -64,6 +60,15 @@ class TieBreakGame {
 + addPoint(Player player)
 + checkTieBreakWinner(): boolean
 + getScore(): String
+}
+
+class ScoreBoard {
+- int[] currentPoints
+- int[] currentGames
+- int[] currentSets
+- int lackServiceCount
+
++ getMatchScore(): String
 }
 
 @enduml
