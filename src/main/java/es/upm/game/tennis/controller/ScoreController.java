@@ -2,83 +2,109 @@ package es.upm.game.tennis.controller;
 
 import es.upm.game.tennis.model.Game;
 import es.upm.game.tennis.model.Match;
-import es.upm.game.tennis.model.Player;
+import es.upm.game.tennis.model.ScoreBoard;
 
 import java.util.logging.Logger;
 
 public class ScoreController {
 
-    private Match match;
-    private Player currentServer;
-    private Player playerService;
-    private Player player;
-    private int lackServiceCount = 0;
+    private ScoreBoard scoreBoard;
+    private Game game;
 
     private static final Logger logger = Logger.getLogger(ScoreController.class.getName());
 
-    public ScoreController(Match match) {
-        this.match = match;
+    public ScoreController() {
     }
 
-    public Match getMatch() {
-        return match;
-    }
-
-    public Player getPlayerService() {
-        return match.getPlayerService();
-    }
-
-    public Player getPlayerRest() {
-        return match.getPlayerRest();
-    }
-
-    public Player getCurrentServer() {
-        return currentServer;
+    public ScoreController(ScoreBoard scoreBoard, Game game) {
+        this.scoreBoard = scoreBoard;
+        this.game = game;
     }
 
     private void checkGameEndAndSwitchRoles() {
-        Game currentGame = match.getCurrentGame();
-        if (currentGame.isGameOver()) {
-            match.switchRoles();
-            match.startNewGame();
+        if (isGameOver()) {
+            logger.info("Game ball!");
+            game.switchRoles();
+            scoreBoard.resetPoints();
+
+            if (isSetOver()) {
+                logger.info("Set ball!");
+                scoreBoard.updateSets(game.isPlayer0Service() ? game.getPlayers().get(0) : game.getPlayers().get(1));
+                scoreBoard.resetGames();
+            }
+        }
+    }
+
+    private void scorePoint(boolean isPlayer0Service) {
+        if (isPlayer0Service) {
+            scoreBoard.getCurrentPoints()[0]++;
+        } else {
+            scoreBoard.getCurrentPoints()[1]++;
         }
     }
 
     public void pointService() {
-        Game currentGame = match.getCurrentGame();
-        currentGame.addPoint(match.getPlayerService());
+        if (game.isPlayer0Service()) {
+            scoreBoard.updatePoints(game.getPlayers().get(0));
+        } else {
+            scoreBoard.updatePoints(game.getPlayers().get(1));
+        }
         checkGameEndAndSwitchRoles();
     }
 
     public void pointRest() {
-        Game currentGame = match.getCurrentGame();
-        currentGame.addPoint(match.getPlayerRest());
+        if (game.isPlayer0Service()) {
+            scoreBoard.updatePoints(game.getPlayers().get(1));
+        } else {
+            scoreBoard.updatePoints(game.getPlayers().get(0));
+        }
         checkGameEndAndSwitchRoles();
     }
 
-    public boolean isGameOver() {
-        return match.getCurrentGame().isGameOver();
-    }
-
     public void lackService() {
+        scoreBoard.incrementServiceFault();
+        logger.info("Service fault committed by: " + (game.isPlayer0Service() ? game.getPlayers().get(0).getName() : game.getPlayers().get(1).getName()));
 
-        if (currentServer != null) {
-            logger.info("Lack of service by: " + currentServer.getName());
-            lackServiceCount++;
-
-            if(lackServiceCount == 2){
-                givePointToOponent();
-                lackServiceCount = 0;
+        if (scoreBoard.getServiceFaultCount() == 2) {
+            logger.info("Double fault! Point awarded to the receiver.");
+            if (game.isPlayer0Service()) {
+                scoreBoard.updatePoints(game.getPlayers().get(1));
+            } else {
+                scoreBoard.updatePoints(game.getPlayers().get(0));
             }
 
-        } else {
-            logger.info("No player is currently serving.");
+            scoreBoard.resetServiceFaultCount();
+            checkGameEndAndSwitchRoles();
         }
     }
 
-    private void givePointToOponent(){
-        if(currentServer.equals(playerService)){
-            logger.info("Point awarded to: " + playerService.getName());
-        }
+    public boolean isGameOver() {
+        return scoreBoard.isGameOver();
     }
+
+    public boolean isSetOver() {
+        return scoreBoard.isSetOver();
+    }
+
+//    public void lackService() {
+//        if (currentServer != null) {
+//            logger.info("Lack of service by: " + currentServer.getName());
+//            lackServiceCount++;
+//
+//            if(lackServiceCount == 2){
+//                givePointToOponent();
+//                lackServiceCount = 0;
+//            }
+//
+//        } else {
+//            logger.info("No player is currently serving.");
+//        }
+//    }
+
+//
+//    private void givePointToOponent(){
+//        if(currentServer.equals(playerService)){
+//            logger.info("Point awarded to: " + playerService.getName());
+//        }
+//    }
 }

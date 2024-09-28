@@ -1,8 +1,9 @@
 package es.upm.game.tennis.view;
 
+import es.upm.game.tennis.model.Match;
 import es.upm.game.tennis.model.Player;
 import es.upm.game.tennis.model.Referee;
-import es.upm.game.tennis.controller.ScoreController;
+import es.upm.game.tennis.controller.*;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,32 +12,41 @@ public class MatchView {
 
     private static final Logger logger = Logger.getLogger(MatchView.class.getName());
 
-    public void displayInitialMatch(ScoreController scoreController) {
+    public String getMatchScore(Match match) {
+        String currentServer = match.getCurrentSet().getCurrentGame().isPlayer0Service() ? "*" : " ";
+        String currentReceiver = !match.getCurrentSet().getCurrentGame().isPlayer0Service() ? "*" : " ";
+//        String currentServer = "*";
+//        String currentReceiver = " ";
+
+        Player player1 = match.getCurrentSet().getCurrentGame().getPlayers().get(0);
+        Player player2 = match.getCurrentSet().getCurrentGame().getPlayers().get(1);
+
+        StringBuilder scoreBuilder = new StringBuilder();
+        scoreBuilder.append(String.format("%s %s: %s%n", currentServer, player1.getName(), match.getScoreBoard().getCurrentPoints()[0]))
+                .append(String.format("%s %s: %s%n", currentReceiver, player2.getName(), match.getScoreBoard().getCurrentPoints()[1]));
+
+        return scoreBuilder.toString();
+    }
+
+    public void displayInitialMatch(Match match) {
         StringBuilder matchScore = new StringBuilder();
-        matchScore.append(String.format("date: %s%n", scoreController.getMatch().getDate()))
-                  .append(scoreController.getMatch().getMatchScore());
+        matchScore.append(String.format("date: %s%n", match.getDate()))
+                  .append(getMatchScore(match));
         logger.info(String.format("Init Match:%n%s", matchScore));
     }
 
-    public void displayMatchScore(ScoreController scoreController) {
-        if (scoreController.getMatch() != null) {
-            String matchScore = scoreController.getMatch().getMatchScore();
-            if (logger.isLoggable(Level.INFO)) {
-                logger.info(String.format("Current Match Score: %s", matchScore));
-            }
-        } else {
-            logger.warning("The match has not started yet");
+    public void displayMatchScore() {
+//        String matchScore = getMatchScore();
+        if (logger.isLoggable(Level.INFO)) {
+            logger.info(String.format("Current Match Score: %s", "matchScore"));
         }
     }
 
-    public void displayMatchResult(ScoreController scoreController) {
-        if (scoreController.getMatch() != null) {
-            String matchScore = scoreController.getMatch().getMatchScore();
-            if (logger.isLoggable(Level.INFO)) {
-                logger.info(String.format("Results Match:%n%s", matchScore));
-            }
-        } else {
-            logger.warning("The match has not started yet");
+    // cambiar formato de resultado final del partido. Quitar getMatchScore();
+    public void displayMatchResult() {
+//        String matchScore = getMatchScore();
+        if (logger.isLoggable(Level.INFO)) {
+            logger.info(String.format("Results Match:%n%s", "matchScore"));
         }
     }
 

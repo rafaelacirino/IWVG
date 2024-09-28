@@ -1,32 +1,35 @@
 package es.upm.game.tennis.model;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 public class Match {
 
+    private String id;
     private Date date;
-    private Player playerService;
-    private Player playerRest;
-    private boolean isPlayerService;
-    private Game currentGame;
+    private List<Set> sets;
+    private int totalSets;
+    private Set currentSet;
+    private ScoreBoard scoreBoard;
 
     public Match() {
     }
 
     public Match(int totalSets, Player playerService, Player playerRest) {
-        this.playerService = playerService;
-        this.playerRest = playerRest;
+        assert totalSets == 3 || totalSets == 5 : "Total sets must be 3 or 5";
+        this.totalSets = totalSets;
+        this.id = UUID.randomUUID().toString();
         this.date = new Date();
-        startNewGame();
-    }
+        this.sets = new ArrayList<>(totalSets);
+        this.scoreBoard = new ScoreBoard(totalSets, playerService, playerRest);
 
-    public Game getCurrentGame() {
-        return currentGame;
-    }
-
-    public void startNewGame() {
-        this.currentGame = new Game(playerService, playerRest);
+        for (int i = 0; i < totalSets; i++) {
+            this.sets.add(new Set(playerService, playerRest));
+        }
+        currentSet = sets.get(0);
     }
 
     public String getDate() {
@@ -34,30 +37,23 @@ public class Match {
         return dateFormat.format(date);
     }
 
-    public Player getPlayerService() {
-        return playerService;
+    public List<Set> getSets() {
+        return sets;
     }
 
-    public Player getPlayerRest() {
-        return playerRest;
+    public int getTotalSets() {
+        return totalSets;
     }
 
-    public String getMatchScore() {
-        String currentServer = isPlayerService ? "*" : " ";
-        String currentReceiver = !isPlayerService ? "*" : " ";
-
-
-        StringBuilder scoreBuilder = new StringBuilder();
-        scoreBuilder.append(String.format("%s %s: %s%n", currentServer, playerService.getName(), playerService.getCurrentPoints()))
-                .append(String.format("%s %s: %s%n", currentReceiver, playerRest.getName(), playerRest.getCurrentPoints()));
-
-        return scoreBuilder.toString();
+    public Set getCurrentSet() {
+        return currentSet;
     }
 
-    public void switchRoles() {
-        isPlayerService = !isPlayerService;
-        Player temp = playerService;
-        playerService = playerRest;
-        playerRest = temp;
+    public ScoreBoard getScoreBoard() {
+        return scoreBoard;
     }
+
+//    public String getMatchScore() {
+//        return scoreBoard.getMatchScore();
+//    }
 }

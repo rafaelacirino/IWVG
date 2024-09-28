@@ -56,14 +56,18 @@ package "model" {
     + checkTieBreakWinner(): boolean
     + getScore(): String
     }
+
+    class ScoreBoard {
+    - Match match
+    }
 }
 
 package "view" {
     class MatchView {
 
-    + displayInitialMatch(ScoreController scoreController)
-    + displayMatchScore(ScoreController scoreController)
-    + displayMatchResult(ScoreController scoreController)
+    + displayInitialMatch()
+    + displayMatchScore()
+    + displayMatchResult()
     + displayPlayerCreated(Player player)
     + displayRefereeCreated(Referee referee)
     + displayLoginStatus(boolean success)
@@ -124,9 +128,9 @@ package "controller" {
     }
 }
 
-"controller" ..> "model" : request
-"controller" ..> "view" : display
-"view" ..> "controller" : request
+"controller" ..> "model" : request/update
+"controller" ..> "view" : send
+"view" ..> "controller" : display
 "model" ..> "controller" : send
 
 

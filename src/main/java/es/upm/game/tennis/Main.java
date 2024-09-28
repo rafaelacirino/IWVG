@@ -4,7 +4,6 @@ import es.upm.game.tennis.controller.*;
 import es.upm.game.tennis.model.Match;
 import es.upm.game.tennis.model.Player;
 import es.upm.game.tennis.model.Referee;
-import es.upm.game.tennis.controller.ScoreController;
 import es.upm.game.tennis.view.MatchView;
 
 import java.util.Scanner;
@@ -23,8 +22,7 @@ public class Main {
 
     private static final Scanner scanner = new Scanner(System.in);
 
-    private static boolean isLoggedIn = false;
-    private static boolean isMatchCreated = false;
+//    private static ScoreController scoreController = null;
 
     private static String getInput(String promptMessage) {
         logger.info(promptMessage);
@@ -38,12 +36,12 @@ public class Main {
         return number;
     }
 
-    private static final Map<String, Consumer<MatchController>> pointActions = new HashMap<>();
+    private static final Map<String, Consumer<ScoreController>> pointActions = new HashMap<>();
 
     static {
-        pointActions.put("lackService", MatchController::lackService);
-        pointActions.put("pointService", MatchController::pointService);
-        pointActions.put("pointRest", MatchController::pointRest);
+        pointActions.put("lackService", scoreController -> scoreController.lackService());
+        pointActions.put("pointService", scoreController -> scoreController.pointService());
+        pointActions.put("pointRest", scoreController -> scoreController.pointRest());
     }
 
     public static void main(String[] args) {
@@ -52,8 +50,10 @@ public class Main {
         PlayerController playerController = new PlayerController();
         RefereeController refereeController = new RefereeController();
         Match match = new Match();
-        ScoreController scoreController = new ScoreController(match);
+        ScoreController scoreController = new ScoreController();
         MatchController matchController = null;
+        boolean isLoggedIn = false;
+        boolean isMatchCreated = false;
 
         boolean running = true;
 
@@ -113,10 +113,12 @@ public class Main {
                     Player player2 = playerController.getPlayerById(id2).orElse(null);
 
                     if (player1 != null && player2 != null) {
-                        Match newMatch = new Match(totalSets, player1, player2);
-                        matchController = new MatchController(newMatch, matchView);
+                        match = new Match(totalSets, player1, player2);
+                        scoreController = new ScoreController(match.getScoreBoard(), match.getSets().get(0).getCurrentGame());
+                        matchController = new MatchController(matchView);
+
                         matchController.createMatch(totalSets, player1, player2);
-                        matchController.getInitialMatch();
+                        matchView.displayInitialMatch(match);
                         isMatchCreated = true;
                     } else {
                         logger.warning("One or both players not found.");
@@ -128,20 +130,20 @@ public class Main {
                         logger.warning("Must create a match before adding points");
                         break;
                     }
-                    pointActions.get(command).accept(matchController);
-                    matchController.getDisplayMatchScore();
+//                    pointActions.get(command).accept(scoreController);
+                    matchView.displayMatchScore();
                     break;
 
                 case "displayScore":
                     if (matchController != null) {
-                        matchController.getDisplayMatchScore();
+                        matchView.displayMatchScore();
                     } else {
                         logger.info("No match is active.");
                     }
                     break;
 
                 case "readMatch":
-                    matchView.displayMatchResult(scoreController);
+                    matchView.displayMatchResult();
                     break;
 
                 case "logout":
