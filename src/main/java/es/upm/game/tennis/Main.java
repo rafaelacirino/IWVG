@@ -22,8 +22,6 @@ public class Main {
 
     private static final Scanner scanner = new Scanner(System.in);
 
-//    private static ScoreController scoreController = null;
-
     private static String getInput(String promptMessage) {
         logger.info(promptMessage);
         return scanner.nextLine();
@@ -36,12 +34,12 @@ public class Main {
         return number;
     }
 
-    private static final Map<String, Consumer<ScoreController>> pointActions = new HashMap<>();
+    private static final Map<String, Consumer<MatchController>> pointActions = new HashMap<>();
 
     static {
-        pointActions.put("lackService", scoreController -> scoreController.lackService());
-        pointActions.put("pointService", scoreController -> scoreController.pointService());
-        pointActions.put("pointRest", scoreController -> scoreController.pointRest());
+        pointActions.put("lackService", MatchController::lackService);
+        pointActions.put("pointService", MatchController::pointService);
+        pointActions.put("pointRest", MatchController::pointRest);
     }
 
     public static void main(String[] args) {
@@ -49,8 +47,7 @@ public class Main {
         MatchView matchView = new MatchView();
         PlayerController playerController = new PlayerController();
         RefereeController refereeController = new RefereeController();
-        Match match = new Match();
-        ScoreController scoreController = new ScoreController();
+        Match match = null;
         MatchController matchController = null;
         boolean isLoggedIn = false;
         boolean isMatchCreated = false;
@@ -114,7 +111,6 @@ public class Main {
 
                     if (player1 != null && player2 != null) {
                         match = new Match(totalSets, player1, player2);
-                        scoreController = new ScoreController(match.getScoreBoard(), match.getSets().get(0).getCurrentGame());
                         matchController = new MatchController(matchView);
 
                         matchController.createMatch(totalSets, player1, player2);
@@ -130,16 +126,8 @@ public class Main {
                         logger.warning("Must create a match before adding points");
                         break;
                     }
-//                    pointActions.get(command).accept(scoreController);
-                    matchView.displayMatchScore();
-                    break;
-
-                case "displayScore":
-                    if (matchController != null) {
-                        matchView.displayMatchScore();
-                    } else {
-                        logger.info("No match is active.");
-                    }
+                    pointActions.get(command).accept(matchController);
+                    matchView.displayMatchScore(match);
                     break;
 
                 case "readMatch":

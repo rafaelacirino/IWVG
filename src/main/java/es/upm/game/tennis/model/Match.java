@@ -32,6 +32,10 @@ public class Match {
         currentSet = sets.get(0);
     }
 
+    public String getId() {
+        return id;
+    }
+
     public String getDate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         return dateFormat.format(date);
@@ -53,7 +57,4 @@ public class Match {
         return scoreBoard;
     }
 
-//    public String getMatchScore() {
-//        return scoreBoard.getMatchScore();
-//    }
 }

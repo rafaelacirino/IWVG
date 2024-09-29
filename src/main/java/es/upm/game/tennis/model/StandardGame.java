@@ -3,38 +3,40 @@ package es.upm.game.tennis.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Game {
-
+public class StandardGame implements IGame {
     private List<Player> players;
     private boolean isPlayer0Service;
 
-    public Game(Player playerService, Player playerRest) {
+    public StandardGame(Player playerService, Player playerRest) {
         this.players = new ArrayList<>();
         this.players.add(playerService);
         this.players.add(playerRest);
         this.isPlayer0Service = true;
     }
 
+    @Override
     public List<Player> getPlayers() {
         return players;
     }
 
+    @Override
     public boolean isPlayer0Service() {
         return isPlayer0Service;
     }
 
+    @Override
     public void switchRoles() {
         isPlayer0Service = !isPlayer0Service;
     }
 
-//    private boolean checkGameWinner(Player player) {
-//        return player.getCurrentPoints() >= 4 &&
-//                (player.getCurrentPoints() - getOpponent(player).getCurrentPoints() >= 2);
-//    }
+    @Override
+    public void updatePoints(Player player) {
+        // Update logic for normal game points
+    }
 
-//    private Player getOpponent(Player player) {
-//        return (player == playerService) ? playerRest : playerService;
-//    }
-
-
+    @Override
+    public boolean isGameOver() {
+        // Game-over logic for regular games
+        return false;
+    }
 }

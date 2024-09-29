@@ -2,18 +2,13 @@
 package "model" {
 
     class Match {
+    - String id
     - Date date
     - List<Set> sets
-    - private int totalSets
-    - List<Player> players
-    - boolean isPlayer0Service
+    - int totalSets
+    - Set currentSet
     - ScoreBoard scoreBoard
 
-    + startNewGame()
-    + addSet(Set set)
-    + isMatchOver(): boolean
-    + getMatchScore(): String
-    + switchRoles()
     }
 
     class Referee {
@@ -30,33 +25,42 @@ package "model" {
     }
 
     class Set {
-    - int playerServiceGamesWon
-    - int playerRestGamesWon
+    - Game currentGame
+    - List<Game> games
 
-    + isSetOver()
+    + addGame(Game game)
     }
 
     class Game {
-    - Player playerService
-    - Player playerRest
+    - List<Player> players
+    - boolean isPlayer0Service
 
-    + addPoint(Player player)
-    + isGameOver(): boolean
-    - checkGameWinner(Player): boolean
-    - getOpponent(Player player): Player
+    + isPlayer0Service(): boolean
+    + switchRoles()
     }
 
     class TieBreakGame {
-    - int playerServicePoints
-    - int playerRestPoints
-
-    + addPoint(Player player)
-    + checkTieBreakWinner(): boolean
-    + getScore(): String
     }
 
     class ScoreBoard {
-    - Match match
+    - int[] currentPoints;
+    - int[][] currentGames;
+    - int[] currentSets;
+    - int lackServiceCount;
+    - int totalSets;
+    - List<Player> players;
+
+    + incrementServiceFault()
+    + getServiceFaultCount(): int
+    + resetServiceFaultCount()
+    + updatePoints(Player player)
+    + updateGames(Player player)
+    + updateSets(Player player)
+    + resetPoints()
+    + resetGames()
+    + isGameOver(): boolean
+    + isSetOver(): boolean
+    + getCurrentSetIndex(): int
     }
 }
 
@@ -80,16 +84,10 @@ package "view" {
 
 package "controller" {
     class MatchController {
-    - ScoreController scoreController
     - MatchView matchView
     - Match match
 
     + createMatch(int totalSets, Player playerService, Player playerRest)
-    + getDisplayInitialMatch()
-    + getDisplayMatchScore()
-    + lackService()
-    + pointService()
-    + pointRest()
     }
 
     class PlayerController {
@@ -109,19 +107,16 @@ package "controller" {
     }
 
     class ScoreController {
-    - Match match
-    - Player currentServer
-    - Player playerService
-    - Player Player
-    - int lackServiceCount
+    - ScoreBoard scoreBoard
+    - Game game
 
-    + getMatch()
     + checkGameEndAndSwitchRoles()
+    - scorePoint(boolean isPlayer0Service)
     + pointService()
     + pointRest()
     + lackService()
     + isGameOver(): boolean
-    - givePointToOponent()
+    + isSetOver(): boolean
 
     }
 }

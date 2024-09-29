@@ -5,9 +5,9 @@ import es.upm.game.tennis.view.MatchView;
 
 public class MatchController {
 
-//    private final ScoreController scoreController;
-    private final MatchView matchView;
     private Match match;
+    private MatchView matchView;
+    private ScoreController scoreController;
 
     public MatchController(MatchView matchView) {
         this.matchView = matchView;
@@ -17,23 +17,28 @@ public class MatchController {
         Player playerService = Math.random() < 0.5 ? playerCurrent : playerPast;
         Player playerRest = (playerService == playerCurrent) ? playerPast : playerService;
         match = new Match(totalSets, playerService, playerRest);
+
+        scoreController = new ScoreController(match.getScoreBoard(), match.getCurrentSet().getCurrentGame());
     }
 
-//    public void getInitialMatch() {
-//        matchView.displayInitialMatch();
-//    }
-//
-//    public void getDisplayMatchScore() {
-//        matchView.displayMatchScore();
-//    }
+    public void pointService() {
+        assert scoreController != null : "No match is currently active";
 
-//    public void lackService() {
-//        scoreController.lackService();
-//        matchView.displayLackService(scoreController.getCurrentServer());
-//        if (scoreController.isGameOver()) {
-//            matchView.displayGameOver();
-//        }
-//    }
+        scoreController.pointService();
+    }
+
+    public void pointRest() {
+        assert scoreController != null : "No match is currently active";
+
+        scoreController.pointRest();
+    }
+
+
+    public void lackService() {
+        assert scoreController != null : "No match is currently active";
+
+        scoreController.lackService();
+    }
 //
 //    public void pointService() {
 //        scoreController.pointService();
