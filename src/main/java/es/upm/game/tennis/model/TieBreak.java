@@ -24,10 +24,9 @@ public class TieBreak extends Game {
         if (playerServicePoints >= 6 && playerServicePoints - playerRestPoints >= 2) {
             return true;
         }
-        if (playerRestPoints >= 6 && playerRestPoints - playerServicePoints >= 2) {
-            return true;
+        else{
+            return playerRestPoints >= 6 && playerRestPoints - playerServicePoints >= 2;
         }
-        return false;
     }
 
     public String getScore() {

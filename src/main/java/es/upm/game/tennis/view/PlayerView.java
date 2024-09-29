@@ -11,12 +11,4 @@ public class PlayerView {
     public void displayPlayerCreated(Player player) {
         logger.info("Player created: " + player.getName());
     }
-
-    public void displayPointToServer(Player playerService) {
-        logger.info("Point to Server: " + playerService.getName());
-    }
-
-    public void displayPointToReceiver(Player playerRest) {
-        logger.info("Point to Receiver: " + playerRest.getName());
-    }
 }

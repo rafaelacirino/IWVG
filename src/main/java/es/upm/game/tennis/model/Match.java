@@ -25,10 +25,6 @@ public class Match {
         return currentGame;
     }
 
-    public void startNewGame() {
-        this.currentGame = new Game(playerService, playerRest);
-    }
-
     public String getDate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         return dateFormat.format(date);
@@ -40,6 +36,10 @@ public class Match {
 
     public Player getPlayerRest() {
         return playerRest;
+    }
+
+    public void startNewGame() {
+        this.currentGame = new Game(playerService, playerRest);
     }
 
     public String getMatchScore() {

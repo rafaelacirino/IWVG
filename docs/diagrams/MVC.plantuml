@@ -65,25 +65,35 @@ package "view" {
     + displayMatchScore(ScoreController scoreController)
     + displayMatchResult(ScoreController scoreController)
     + displayPlayerCreated(Player player)
+    + displaySetOver()
+    + displayMatchOver(
+    }
+
+    class RefereeView {
+
     + displayRefereeCreated(Referee referee)
     + displayLoginStatus(boolean success)
+    }
+
+    class ScoreView {
+
     + displayPointToServer(Player playerService)
     + displayPointToReceiver(Player playerRest)
     + displayLackService(Player playerService)
     + displayGameOver()
-    + displaySetOver()
-    + displayMatchOver()
     }
+
 }
 
 package "controller" {
     class MatchController {
     - ScoreController scoreController
     - MatchView matchView
+    - ScoreView scoreView
     - Match match
 
-    + createMatch(int totalSets, Player playerService, Player playerRest)
-    + getDisplayInitialMatch()
+    + createMatch(int totalSets, Player playerCurrent, Player playerPast)
+    + getInitialMatch()
     + getDisplayMatchScore()
     + lackService()
     + pointService()
@@ -94,12 +104,12 @@ package "controller" {
     - List<Player> players
 
     + createPlayer(String name): Player
-    + getPlayerById(int id): Player
+    + getPlayerById(int id): Optional<Player>
     + getPlayers(): List<Player>
     }
 
     class RefereeController {
-    - ArrayList<Referee> referees
+    - List<Referee> referees
 
     + createReferee(String name, String password): Referee
     + login(String name, String password): boolean
@@ -110,10 +120,8 @@ package "controller" {
     - Match match
     - Player currentServer
     - Player playerService
-    - Player Player
     - int lackServiceCount
 
-    + getMatch()
     + checkGameEndAndSwitchRoles()
     + pointService()
     + pointRest()
