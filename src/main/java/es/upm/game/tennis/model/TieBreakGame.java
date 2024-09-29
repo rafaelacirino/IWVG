@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TieBreakGame implements IGame {
-    private List<Player> players;
+    private final List<Player> players;
     private boolean isPlayer0Service;
 
     public TieBreakGame(Player playerService, Player playerRest) {
@@ -16,7 +16,7 @@ public class TieBreakGame implements IGame {
 
     @Override
     public List<Player> getPlayers() {
-        return List.of();
+        return players;
     }
 
     @Override
@@ -29,14 +29,4 @@ public class TieBreakGame implements IGame {
         isPlayer0Service = !isPlayer0Service;
     }
 
-    @Override
-    public void updatePoints(Player player) {
-        // Update logic for TieBreak game points
-    }
-
-    @Override
-    public boolean isGameOver() {
-        // Game-over logic for TieBreak games
-        return false;
-    }
 }

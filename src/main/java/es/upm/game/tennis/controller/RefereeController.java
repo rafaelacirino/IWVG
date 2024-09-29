@@ -17,7 +17,7 @@ public class RefereeController {
     }
 
     public Referee createReferee(String name, String password) {
-        Referee referee = new Referee(referees.size() + 1, name, password);
+        Referee referee = new Referee(name, password);
         if (isDuplicate(name, password)){
             logger.info("Referee name already exists. Create another one.");
         } else{

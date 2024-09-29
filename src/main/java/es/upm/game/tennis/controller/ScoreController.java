@@ -1,14 +1,13 @@
 package es.upm.game.tennis.controller;
 
 import es.upm.game.tennis.model.*;
-import es.upm.game.tennis.view.MatchView;
 
 import java.util.logging.Logger;
 
 public class ScoreController {
 
-    private ScoreBoard scoreBoard;
-    private IGame game;
+    private final ScoreBoard scoreBoard;
+    private final IGame game;
 
     private static final Logger logger = Logger.getLogger(ScoreController.class.getName());
 
@@ -31,17 +30,6 @@ public class ScoreController {
         }
     }
 
-//    private void scorePoint(boolean isPlayer0Service) {
-//        if (scoreBoard.getServiceFaultCount() > 0) {
-//            scoreBoard.resetServiceFaultCount();
-//        }
-//        if (isPlayer0Service) {
-//            scoreBoard.getCurrentPoints()[0]++;
-//        } else {
-//            scoreBoard.getCurrentPoints()[1]++;
-//        }
-//    }
-
     private void scorePoint(Player player) {
         scoreBoard.updatePoints(player);
         checkGameEndAndSwitchRoles();
@@ -50,9 +38,7 @@ public class ScoreController {
     public void pointService() {
         if (game.isPlayer0Service()) {
             logger.info("Player 0 (Server) scored a point, %s");
-            System.out.println("CURRENT POINTS: " + scoreBoard.getCurrentPoints()[0]);
             scorePoint(game.getPlayers().get(0));
-            System.out.println("CURRENT POINTS: " + scoreBoard.getCurrentPoints()[0]);
         } else {
             logger.info("Player 1 (Server) scored a point");
             scorePoint(game.getPlayers().get(1));
@@ -69,24 +55,6 @@ public class ScoreController {
         }
     }
 
-//    public void pointService() {
-//        if (game.isPlayer0Service()) {
-//            scoreBoard.updatePoints(game.getPlayers().get(0));
-//        } else {
-//            scoreBoard.updatePoints(game.getPlayers().get(1));
-//        }
-//        checkGameEndAndSwitchRoles();
-//    }
-
-//    public void pointRest() {
-//        if (game.isPlayer0Service()) {
-//            scoreBoard.updatePoints(game.getPlayers().get(1));
-//        } else {
-//            scoreBoard.updatePoints(game.getPlayers().get(0));
-//        }
-//        checkGameEndAndSwitchRoles();
-//    }
-
     public void lackService() {
         scoreBoard.incrementServiceFault();
         logger.info("Service fault! Current fault count: " + scoreBoard.getServiceFaultCount());
@@ -95,23 +63,10 @@ public class ScoreController {
             logger.info("Two consecutive service faults! Point awarded to the receiver.");
             if (game.isPlayer0Service()) {
                 scorePoint(game.getPlayers().get(1));
-//                scoreBoard.updatePoints(game.getPlayers().get(1));
             } else {
                 scorePoint(game.getPlayers().get(0));
-//                scoreBoard.updatePoints(game.getPlayers().get(0));
             }
             scoreBoard.resetServiceFaultCount();
         }
     }
-
-//    private void checkGameEndAndSwitchRoles() {
-//        if (scoreBoard.isGameOver()) {
-//            game.switchRoles();
-//            scoreBoard.resetPoints();
-//            if (scoreBoard.isSetOver()) {
-//                scoreBoard.updateSets(game.isPlayer0Service() ? game.getPlayers().get(0) : game.getPlayers().get(1));
-//                scoreBoard.resetGames();
-//            }
-//        }
-//    }
 }

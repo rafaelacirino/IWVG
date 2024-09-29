@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StandardGame implements IGame {
-    private List<Player> players;
+    private final List<Player> players;
     private boolean isPlayer0Service;
 
     public StandardGame(Player playerService, Player playerRest) {
@@ -27,16 +27,5 @@ public class StandardGame implements IGame {
     @Override
     public void switchRoles() {
         isPlayer0Service = !isPlayer0Service;
-    }
-
-    @Override
-    public void updatePoints(Player player) {
-        // Update logic for normal game points
-    }
-
-    @Override
-    public boolean isGameOver() {
-        // Game-over logic for regular games
-        return false;
     }
 }

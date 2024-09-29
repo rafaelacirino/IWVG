@@ -22,24 +22,45 @@ package "model" {
     class Player {
     - int id
     - String name
+
     }
 
     class Set {
-    - Game currentGame
-    - List<Game> games
+    - IGame currentGame
+    - List<IGame> games
+    - GameFactory gameFactory
 
     + addGame(Game game)
+    + updateGame(Player playerService, Player playerRest)
+    + isTieBreak(): boolean
     }
 
-    class Game {
+    interface IGame {
+    List<Player> getPlayers();
+    boolean isPlayer0Service();
+    void switchRoles();
+    void updatePoints(Player player);
+    boolean isGameOver();
+    }
+
+    class StandardGame implements IGame{
     - List<Player> players
     - boolean isPlayer0Service
 
     + isPlayer0Service(): boolean
     + switchRoles()
+    + updatePoints(Player player)
+    + isGameOver(): boolean
     }
 
-    class TieBreakGame {
+    class TieBreakGame implements IGame{
+    - List<Player> players
+    - boolean isPlayer0Service
+
+    + isPlayer0Service(): boolean
+    + switchRoles()
+    + updatePoints(Player player)
+    + isGameOver(): boolean
     }
 
     class ScoreBoard {
@@ -60,25 +81,26 @@ package "model" {
     + resetGames()
     + isGameOver(): boolean
     + isSetOver(): boolean
-    + getCurrentSetIndex(): int
+    - getCurrentSetIndex(): int
     }
 }
 
 package "view" {
     class MatchView {
+    + displayInitialMatch(ScoreController scoreController)
+    + displayMatchScore(ScoreController scoreController)
+    + displayMatchResult(ScoreController scoreController)
+    + displaySetOver()
+    + displayMatchOver(
+    }
 
-    + displayInitialMatch()
-    + displayMatchScore()
-    + displayMatchResult()
-    + displayPlayerCreated(Player player)
+    class PlayerView {
+    + + displayPlayerCreated(Player player)
+    }
+
+    class RefereeView {
     + displayRefereeCreated(Referee referee)
     + displayLoginStatus(boolean success)
-    + displayPointToServer(Player playerService)
-    + displayPointToReceiver(Player playerRest)
-    + displayLackService(Player playerService)
-    + displayGameOver()
-    + displaySetOver()
-    + displayMatchOver()
     }
 }
 

@@ -18,7 +18,4 @@ public class Player {
         return id;
     }
 
-//    public int getCurrentPoints() {
-//        return currentPoints;
-//    }
 }

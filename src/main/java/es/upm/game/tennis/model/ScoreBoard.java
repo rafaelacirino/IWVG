@@ -5,12 +5,12 @@ import java.util.List;
 
 public class ScoreBoard {
 
-    private int[] currentPoints;
-    private int[][] currentGames;
-    private int[] currentSets;
+    private final int[] currentPoints;
+    private final int[][] currentGames;
+    private final int[] currentSets;
     private int lackServiceCount;
-    private int totalSets;
-    private List<Player> players;
+    private final int totalSets;
+    private final List<Player> players;
 
     public ScoreBoard(int totalSets, Player playerService, Player playerRest) {
         this.totalSets = totalSets;
@@ -27,12 +27,8 @@ public class ScoreBoard {
         return currentPoints;
     }
 
-    public int[][] getCurrentGames() {
-        return currentGames;
-    }
-
-    public int[] getCurrentSets() {
-        return currentSets;
+    public List<Player> getPlayers() {
+        return players;
     }
 
     public void incrementServiceFault() {
@@ -49,7 +45,7 @@ public class ScoreBoard {
 
     public void updatePoints(Player player) {
         int playerIndex = players.indexOf(player);
-        currentPoints[playerIndex]++;
+        currentPoints[playerIndex] += 1;
 
         if (isGameOver()) {
             updateGames(player);
