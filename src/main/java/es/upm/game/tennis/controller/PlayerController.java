@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public class PlayerController {
 
-    private List<Player> players;
+    private final List<Player> players;
 
     public PlayerController() {
         players = new ArrayList<>();

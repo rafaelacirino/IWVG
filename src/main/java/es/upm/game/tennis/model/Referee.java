@@ -2,12 +2,10 @@ package es.upm.game.tennis.model;
 
 public class Referee {
 
-    private int id;
     private final String name;
     private final String password;
 
-    public Referee(int id, String name, String password) {
-        this.id = id;
+    public Referee(String name, String password) {
         this.name = name;
         this.password = password;
     }

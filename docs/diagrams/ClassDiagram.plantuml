@@ -1,34 +1,32 @@
 @startuml
 
-Match *-down-> "2" Player
+
 Match *-down-> "3|5" Set
-Match *-down-> Referee
+Match o-down-> Referee
+Match *-down-> ScoreBoard
 
-Set *-down-> "6..13" Game
+Set *-down-> "6..13" IGame
 
-Game <|-down- TieBreakGame
+StandardGame o-down-> "2" Player
+TieBreakGame o-down-> "2" Player
 
+ScoreBoard -down-> "2" Player
 
 class Match {
+- String id
+- Date date
+- List<Set> sets
 - int totalSets
-- ArrayList<Set> setsPlayed
-- List<Player> players
-- boolean isPlayerService
-- Game currentGame
+- Set currentSet
+- ScoreBoard scoreBoard
 
-+ startNewGame() **
-+ addSet(Set set)
 + isMatchOver(): boolean
-+ getMatchScore(): String
 }
 
 class Player {
 - int id
 - String name
-- int currentPoints **
-- int[] gamesWonPerSet ****
 
-+ scorePoint() **
 }
 
 class Referee {
@@ -40,30 +38,62 @@ class Referee {
 }
 
 class Set {
-- int numberSet ++
-- int playerServiceGamesWon
-- int playerRestGamesWon
+    - IGame currentGame
+    - List<IGame> games
+    - GameFactory gameFactory
 
-+ isSetOver()
+    + addGame(Game game)
+    + updateGame(Player playerService, Player playerRest)
+    + isTieBreak(): boolean
+    }
+
+interface IGame {
+List<Player> getPlayers();
+boolean isPlayer0Service();
+void switchRoles();
+void updatePoints(Player player);
+boolean isGameOver();
 }
 
-class Game {
-- Player playerService
-- Player playerRest
+class StandardGame implements IGame{
+- List<Player> players
+- boolean isPlayer0Service
 
-+ addPoint(Player player)
++ isPlayer0Service(): boolean
++ switchRoles()
++ updatePoints(Player player)
 + isGameOver(): boolean
-- checkGameWinner(Player): boolean
-- getOpponent(Player player): Player
 }
 
-class TieBreakGame {
-- int playerServicePoints
-- int playerRestPoints
+class TieBreakGame implements IGame{
+- List<Player> players
+- boolean isPlayer0Service
 
-+ addPoint(Player player)
-+ checkTieBreakWinner(): boolean
-+ getScore(): String
++ isPlayer0Service(): boolean
++ switchRoles()
++ updatePoints(Player player)
++ isGameOver(): boolean
+}
+
+class ScoreBoard {
+- int[] currentPoints;
+- int[][] currentGames;
+- int[] currentSets;
+- int lackServiceCount;
+- int totalSets;
+- List<Player> players;
+
++ incrementServiceFault()
++ getServiceFaultCount(): int
++ resetServiceFaultCount()
++ updatePoints(Player player)
++ updateGames(Player player)
++ updateSets(Player player)
++ resetPoints()
++ resetGames()
++ isGameOver(): boolean
++ isSetOver(): boolean
+- getCurrentSetIndex(): int
 }
 
 @enduml

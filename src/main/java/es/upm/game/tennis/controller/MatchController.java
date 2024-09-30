@@ -5,50 +5,42 @@ import es.upm.game.tennis.view.MatchView;
 
 public class MatchController {
 
-    private final ScoreController scoreController;
-    private final MatchView matchView;
+    private static final String NO_MATCH_ACTIVE = "No match is currently active";
     private Match match;
+    private ScoreController scoreController;
 
-    public MatchController(Match match, MatchView matchView) {
-        this.scoreController = new ScoreController(match);
-        this.matchView = matchView;
+    public MatchController(MatchView matchView) {
     }
 
     public void createMatch(int totalSets, Player playerCurrent, Player playerPast){
         Player playerService = Math.random() < 0.5 ? playerCurrent : playerPast;
         Player playerRest = (playerService == playerCurrent) ? playerPast : playerService;
         match = new Match(totalSets, playerService, playerRest);
+
+        scoreController = new ScoreController(match.getScoreBoard(), match.getCurrentSet().getCurrentGame());
     }
 
-    public void getInitialMatch() {
-        matchView.displayInitialMatch(scoreController);
-    }
-
-    public void getDisplayMatchScore() {
-        matchView.displayMatchScore(scoreController);
-    }
-
-    public void lackService() {
-        scoreController.lackService();
-        matchView.displayLackService(scoreController.getCurrentServer());
-        if (scoreController.isGameOver()) {
-            matchView.displayGameOver();
-        }
+    public Match getMatch() {
+        return match;
     }
 
     public void pointService() {
+        assert scoreController != null : NO_MATCH_ACTIVE;
+
         scoreController.pointService();
-        matchView.displayPointToServer(scoreController.getPlayerService());
-        if (scoreController.isGameOver()) {
-            matchView.displayGameOver();
-        }
     }
 
     public void pointRest() {
+        assert scoreController != null : NO_MATCH_ACTIVE;
+
         scoreController.pointRest();
-        matchView.displayPointToReceiver(scoreController.getPlayerRest());
-        if (scoreController.isGameOver()) {
-            matchView.displayGameOver();
-        }
     }
+
+
+    public void lackService() {
+        assert scoreController != null : NO_MATCH_ACTIVE;
+
+        scoreController.lackService();
+    }
+
 }

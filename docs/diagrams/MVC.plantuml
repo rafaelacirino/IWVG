@@ -2,17 +2,13 @@
 package "model" {
 
     class Match {
+    - String id
     - Date date
-    - Player playerService
-    - Player playerRest
-    - boolean isPlayerService
-    - Game currentGame
+    - List<Set> sets
+    - int totalSets
+    - Set currentSet
+    - ScoreBoard scoreBoard
 
-    + startNewGame()
-    + addSet(Set set)
-    + isMatchOver(): boolean
-    + getMatchScore(): String
-    + switchRoles()
     }
 
     class Referee {
@@ -26,68 +22,94 @@ package "model" {
     class Player {
     - int id
     - String name
-    - int currentPoints
 
-    + scorePoint()
     }
 
     class Set {
-    - int playerServiceGamesWon
-    - int playerRestGamesWon
+    - IGame currentGame
+    - List<IGame> games
+    - GameFactory gameFactory
 
-    + isSetOver()
+    + addGame(Game game)
+    + updateGame(Player playerService, Player playerRest)
+    + isTieBreak(): boolean
     }
 
-    class Game {
-    - Player playerService
-    - Player playerRest
+    interface IGame {
+    List<Player> getPlayers();
+    boolean isPlayer0Service();
+    void switchRoles();
+    void updatePoints(Player player);
+    boolean isGameOver();
+    }
 
-    + addPoint(Player player)
+    class StandardGame implements IGame{
+    - List<Player> players
+    - boolean isPlayer0Service
+
+    + isPlayer0Service(): boolean
+    + switchRoles()
+    + updatePoints(Player player)
     + isGameOver(): boolean
-    - checkGameWinner(Player): boolean
-    - getOpponent(Player player): Player
     }
 
-    class TieBreakGame {
-    - int playerServicePoints
-    - int playerRestPoints
+    class TieBreakGame implements IGame{
+    - List<Player> players
+    - boolean isPlayer0Service
 
-    + addPoint(Player player)
-    + checkTieBreakWinner(): boolean
-    + getScore(): String
+    + isPlayer0Service(): boolean
+    + switchRoles()
+    + updatePoints(Player player)
+    + isGameOver(): boolean
+    }
+
+    class ScoreBoard {
+    - int[] currentPoints;
+    - int[][] currentGames;
+    - int[] currentSets;
+    - int lackServiceCount;
+    - int totalSets;
+    - List<Player> players;
+
+    + incrementServiceFault()
+    + getServiceFaultCount(): int
+    + resetServiceFaultCount()
+    + updatePoints(Player player)
+    + updateGames(Player player)
+    + updateSets(Player player)
+    + resetPoints()
+    + resetGames()
+    + isGameOver(): boolean
+    + isSetOver(): boolean
+    - getCurrentSetIndex(): int
     }
 }
 
 package "view" {
     class MatchView {
-
     + displayInitialMatch(ScoreController scoreController)
     + displayMatchScore(ScoreController scoreController)
     + displayMatchResult(ScoreController scoreController)
-    + displayPlayerCreated(Player player)
+    + displaySetOver()
+    + displayMatchOver(
+    }
+
+    class PlayerView {
+    + + displayPlayerCreated(Player player)
+    }
+
+    class RefereeView {
     + displayRefereeCreated(Referee referee)
     + displayLoginStatus(boolean success)
-    + displayPointToServer(Player playerService)
-    + displayPointToReceiver(Player playerRest)
-    + displayLackService(Player playerService)
-    + displayGameOver()
-    + displaySetOver()
-    + displayMatchOver()
     }
 }
 
 package "controller" {
     class MatchController {
-    - ScoreController scoreController
     - MatchView matchView
     - Match match
 
     + createMatch(int totalSets, Player playerService, Player playerRest)
-    + getDisplayInitialMatch()
-    + getDisplayMatchScore()
-    + lackService()
-    + pointService()
-    + pointRest()
     }
 
     class PlayerController {
@@ -107,26 +129,23 @@ package "controller" {
     }
 
     class ScoreController {
-    - Match match
-    - Player currentServer
-    - Player playerService
-    - Player Player
-    - int lackServiceCount
+    - ScoreBoard scoreBoard
+    - Game game
 
-    + getMatch()
     + checkGameEndAndSwitchRoles()
+    - scorePoint(boolean isPlayer0Service)
     + pointService()
     + pointRest()
     + lackService()
     + isGameOver(): boolean
-    - givePointToOponent()
+    + isSetOver(): boolean
 
     }
 }
 
-"controller" ..> "model" : request
-"controller" ..> "view" : display
-"view" ..> "controller" : request
+"controller" ..> "model" : request/update
+"controller" ..> "view" : send
+"view" ..> "controller" : display
 "model" ..> "controller" : send
 
 

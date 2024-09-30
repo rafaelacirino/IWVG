@@ -1,84 +1,72 @@
 package es.upm.game.tennis.controller;
 
-import es.upm.game.tennis.model.Game;
-import es.upm.game.tennis.model.Match;
-import es.upm.game.tennis.model.Player;
+import es.upm.game.tennis.model.*;
 
 import java.util.logging.Logger;
 
 public class ScoreController {
 
-    private Match match;
-    private Player currentServer;
-    private Player playerService;
-    private Player player;
-    private int lackServiceCount = 0;
+    private final ScoreBoard scoreBoard;
+    private final IGame game;
 
     private static final Logger logger = Logger.getLogger(ScoreController.class.getName());
 
-    public ScoreController(Match match) {
-        this.match = match;
-    }
-
-    public Match getMatch() {
-        return match;
-    }
-
-    public Player getPlayerService() {
-        return match.getPlayerService();
-    }
-
-    public Player getPlayerRest() {
-        return match.getPlayerRest();
-    }
-
-    public Player getCurrentServer() {
-        return currentServer;
+    public ScoreController(ScoreBoard scoreBoard, IGame game) {
+        this.scoreBoard = scoreBoard;
+        this.game = game;
     }
 
     private void checkGameEndAndSwitchRoles() {
-        Game currentGame = match.getCurrentGame();
-        if (currentGame.isGameOver()) {
-            match.switchRoles();
-            match.startNewGame();
+        if (scoreBoard.isGameOver()) {
+            logger.info("Game ball!");
+            game.switchRoles();
+            scoreBoard.resetPoints();
+
+            if (scoreBoard.isSetOver()) {
+                logger.info("Set ball!");
+                scoreBoard.updateSets(game.isPlayer0Service() ? game.getPlayers().get(0) : game.getPlayers().get(1));
+                scoreBoard.resetGames();
+            }
         }
+    }
+
+    private void scorePoint(Player player) {
+        scoreBoard.updatePoints(player);
+        checkGameEndAndSwitchRoles();
     }
 
     public void pointService() {
-        Game currentGame = match.getCurrentGame();
-        currentGame.addPoint(match.getPlayerService());
-        checkGameEndAndSwitchRoles();
-    }
-
-    public void pointRest() {
-        Game currentGame = match.getCurrentGame();
-        currentGame.addPoint(match.getPlayerRest());
-        checkGameEndAndSwitchRoles();
-    }
-
-    public boolean isGameOver() {
-        return match.getCurrentGame().isGameOver();
-    }
-
-    public void lackService() {
-
-        if (currentServer != null) {
-            logger.info("Lack of service by: " + currentServer.getName());
-            lackServiceCount++;
-
-            if(lackServiceCount == 2){
-                givePointToOponent();
-                lackServiceCount = 0;
-            }
-
+        if (game.isPlayer0Service()) {
+            logger.info("Player 0 (Server) scored a point, %s");
+            scorePoint(game.getPlayers().get(0));
         } else {
-            logger.info("No player is currently serving.");
+            logger.info("Player 1 (Server) scored a point");
+            scorePoint(game.getPlayers().get(1));
         }
     }
 
-    private void givePointToOponent(){
-        if(currentServer.equals(playerService)){
-            logger.info("Point awarded to: " + playerService.getName());
+    public void pointRest() {
+        if (game.isPlayer0Service()) {
+            logger.info("Player 1 (Receiver) scored a point");
+            scorePoint(game.getPlayers().get(1));
+        } else {
+            logger.info("Player 0 (Receiver) scored a point");
+            scorePoint(game.getPlayers().get(0));
+        }
+    }
+
+    public void lackService() {
+        scoreBoard.incrementServiceFault();
+        logger.info("Service fault! Current fault count: " + scoreBoard.getServiceFaultCount());
+
+        if (scoreBoard.getServiceFaultCount() >= 2) {
+            logger.info("Two consecutive service faults! Point awarded to the receiver.");
+            if (game.isPlayer0Service()) {
+                scorePoint(game.getPlayers().get(1));
+            } else {
+                scorePoint(game.getPlayers().get(0));
+            }
+            scoreBoard.resetServiceFaultCount();
         }
     }
 }
