@@ -12,8 +12,8 @@ public class Main {
         RefereeView refereeView = new RefereeView();
         RefereeController refereeController = new RefereeController();
         PlayerController playerController = new PlayerController();
-        MatchController matchController = new MatchController(matchView);
-        CommandController commandController = new CommandController(matchView, refereeController, playerController);
+        MatchController matchController = new MatchController();
+        CommandController commandController = new CommandController(matchController, matchView, refereeController, playerController);
 
         CommandHandler commandHandler = new CommandHandler(matchController, refereeController, matchView, refereeView, commandController);
         GameManager gameManager = new GameManager(commandHandler);

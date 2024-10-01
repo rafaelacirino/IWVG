@@ -6,9 +6,7 @@ import java.util.logging.Logger;
 
 public class PlayerView {
 
-    private static final Logger logger = Logger.getLogger(PlayerView.class.getName());
-
     public void displayPlayerCreated(Player player) {
-        logger.info("Player created: " + player.getName());
+        Logger.getLogger(PlayerView.class.getName()).info("Player created: " + player.getName());
     }
 }

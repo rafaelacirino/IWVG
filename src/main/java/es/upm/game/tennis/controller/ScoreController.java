@@ -1,6 +1,8 @@
 package es.upm.game.tennis.controller;
 
 import es.upm.game.tennis.model.*;
+import es.upm.game.tennis.utils.ConstantsUtil;
+import es.upm.game.tennis.view.CommandHandler;
 
 import java.util.logging.Logger;
 
@@ -9,8 +11,6 @@ public class ScoreController {
     private final ScoreBoard scoreBoard;
     private final MatchScore matchScore;
     private AbstractGame currentGame;
-
-    private static final Logger logger = Logger.getLogger(ScoreController.class.getName());
 
     public ScoreController(MatchScore matchScore, AbstractGame currentGame, ScoreBoard scoreBoard) {
         this.matchScore = matchScore;
@@ -33,15 +33,13 @@ public class ScoreController {
 
     private void checkSetEnd() {
         if (matchScore.getCurrentSet().isSetOver()) {
-            logger.info("¡Set terminado!");
+            Logger.getLogger(ScoreController.class.getName()).info(ConstantsUtil.SET_BALL);
 
             if (matchScore.isMatchOver()) {
-                logger.info("¡Partido terminado!");
                 return;
             }
 
             matchScore.getCurrentSet().resetGames();
-            logger.info("Iniciando nuevo set");
         }
     }
 
@@ -73,10 +71,10 @@ public class ScoreController {
 
     public void lackService() {
         scoreBoard.incrementServiceFault();
-        logger.info("Service fault! Current fault count: " + scoreBoard.getServiceFaultCount());
+        Logger.getLogger(ScoreController.class.getName()).info(ConstantsUtil.SERVICE_FAULT + scoreBoard.getServiceFaultCount());
 
         if (scoreBoard.getServiceFaultCount() >= 2) {
-            logger.info("Two consecutive service faults! Point awarded to the receiver.");
+            Logger.getLogger(CommandHandler.class.getName()).info(ConstantsUtil.POINT_AWARDED_TO_THE_RECEIVER);
             if (currentGame.isPlayer0Service()) {
                 scorePoint(currentGame.getPlayers().get(1));
             } else {

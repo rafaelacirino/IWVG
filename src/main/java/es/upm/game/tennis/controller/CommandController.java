@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 public class CommandController {
 
-    private MatchController matchController;
+    private final MatchController matchController;
     private final MatchView matchView;
     private final RefereeController refereeController;
     private final PlayerController playerController;
@@ -23,19 +23,12 @@ public class CommandController {
     private boolean isLoggedIn = false;
     private final Scanner scanner = new Scanner(System.in);
 
-    public CommandController(MatchView matchView, RefereeController refereeController, PlayerController playerController) {
+    public CommandController(MatchController matchController, MatchView matchView, RefereeController refereeController, PlayerController playerController) {
+        this.matchController = matchController;
         this.matchView = matchView;
         this.refereeController = refereeController;
         this.playerController = playerController;
     }
-
-    public CommandController(RefereeController refereeController, MatchView matchView,
-                             RefereeController refereeController1, PlayerController playerController) {
-        this.matchView = matchView;
-        this.refereeController = refereeController1;
-        this.playerController = playerController;
-    }
-
 
     public String getInput(String promptMessage) {
         Logger.getLogger(CommandHandler.class.getName()).info(promptMessage);
@@ -69,7 +62,7 @@ public class CommandController {
 
         foundPlayer.ifPresentOrElse(
                 p -> Logger.getLogger(CommandHandler.class.getName()).info("Player ID: " + p.getId() + ", Name: " + p.getName()),
-                () -> Logger.getLogger(CommandHandler.class.getName()).warning("Player not found.")
+                () -> Logger.getLogger(CommandHandler.class.getName()).warning(ConstantsUtil.PLAYER_NOT_FOUND)
         );
     }
 
@@ -82,32 +75,29 @@ public class CommandController {
 
     public void createMatch(){
         if (!isLoggedIn) {
-            Logger.getLogger(CommandHandler.class.getName()).warning("No referee logged in");
+            Logger.getLogger(CommandHandler.class.getName()).warning(ConstantsUtil.NO_REFEREE_LOGGED_IN);
             return;
         }
 
         int totalSets = getInputNumber(ConstantsUtil.TOTAL_SETS);
-        int id1 = getInputNumber(ConstantsUtil.PLAYER_ID);
-        int id2 = getInputNumber(ConstantsUtil.PLAYER_ID);
+        int idPlayerService = getInputNumber(ConstantsUtil.PLAYER_ID);
+        int idPlayerRest = getInputNumber(ConstantsUtil.PLAYER_ID);
 
-        Player player1 = playerController.getPlayerById(id1).orElse(null);
-        Player player2 = playerController.getPlayerById(id2).orElse(null);
+        Player playerService = playerController.getPlayerById(idPlayerService).orElse(null);
+        Player playerRest = playerController.getPlayerById(idPlayerRest).orElse(null);
 
-        if (player1 != null && player2 != null) {
-            MatchController matchController = new MatchController(matchView);
-
-            matchController.createMatch(totalSets, player1, player2);
+        if (playerService != null && playerRest != null) {
+            matchController.createMatch(totalSets, playerService, playerRest);
             matchView.displayInitialMatch(matchController);
             isMatchCreated = true;
-            //return;
         } else {
-            Logger.getLogger(CommandHandler.class.getName()).warning("One or both players not found.");
+            Logger.getLogger(CommandHandler.class.getName()).warning(ConstantsUtil.PLAYERS_NOT_FOUND);
         }
     }
 
     public void handleMatchAction(String command) {
         if (!isMatchCreated) {
-            Logger.getLogger(CommandHandler.class.getName()).warning("Must create a match before adding points");
+            Logger.getLogger(CommandHandler.class.getName()).warning(ConstantsUtil.MATCH_BEFORE_ADDING_POINTS);
             return;
         }
         if ("lackService".equals(command)) {

@@ -1,6 +1,7 @@
 package es.upm.game.tennis.controller;
 
 import es.upm.game.tennis.model.Referee;
+import es.upm.game.tennis.utils.ConstantsUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +10,6 @@ import java.util.logging.Logger;
 public class RefereeController {
 
     private final List<Referee> referees;
-    private static final Logger logger = Logger.getLogger(String.valueOf(RefereeController.class));
-
 
     public RefereeController() {
         referees = new ArrayList<>();
@@ -19,7 +18,7 @@ public class RefereeController {
     public Referee createReferee(String name, String password) {
         Referee referee = new Referee(name, password);
         if (isDuplicate(name, password)){
-            logger.info("Referee name already exists. Create another one.");
+            Logger.getLogger(RefereeController.class.getName()).info(ConstantsUtil.REFEREE_NAME_ALREADY_EXISTS);
         } else{
             referees.add(referee);
         }

@@ -1,6 +1,7 @@
 package es.upm.game.tennis.model;
 
 public class SetScore {
+
     private final int[] gamesWon = {0, 0};
 
     public void addGame(int playerIndex) {

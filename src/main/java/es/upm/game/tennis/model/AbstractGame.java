@@ -1,5 +1,7 @@
 package es.upm.game.tennis.model;
 
+import es.upm.game.tennis.utils.ConstantsUtil;
+
 import java.util.List;
 
 public abstract class AbstractGame {
@@ -46,6 +48,6 @@ public abstract class AbstractGame {
     public abstract boolean isGameOver();
 
     public void onGameOver() {
-        System.out.println("Game ball!! Winner: " + (gameScore.getPoints()[0] > gameScore.getPoints()[1] ? players.get(0).getName() : players.get(1).getName()));
+        System.out.println(ConstantsUtil.GAME_BALL);
     }
 }

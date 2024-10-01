@@ -1,5 +1,7 @@
 package es.upm.game.tennis.view;
 
+import es.upm.game.tennis.utils.ConstantsUtil;
+
 import java.util.Scanner;
 
 public class GameManager {
@@ -16,9 +18,9 @@ public class GameManager {
         while (running) {
             System.out.print("> ");
             String command = scanner.nextLine();
-            if (command.equals("logout")) {
+            if (command.equals(ConstantsUtil.LOGOUT)) {
                 running = false;
-                System.out.println("Exiting...");
+                System.out.println(ConstantsUtil.EXITING);
             } else {
                 commandHandler.handleCommand(command);
             }

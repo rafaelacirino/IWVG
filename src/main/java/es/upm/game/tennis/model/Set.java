@@ -1,5 +1,7 @@
 package es.upm.game.tennis.model;
 
+import es.upm.game.tennis.controller.GameController;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,12 +9,12 @@ public class Set {
 
     private AbstractGame currentGame;
     private final List<AbstractGame> games;
-    private final GameFactory gameFactory;
+    private final GameController gameController;
 
     public Set(Player playerService, Player playerRest) {
         this.games = new ArrayList<>();
-        this.gameFactory = new GameFactory();
-        this.currentGame = gameFactory.createGame(false, playerService, playerRest);
+        this.gameController = new GameController();
+        this.currentGame = gameController.createGame(false, playerService, playerRest);
         this.games.add(currentGame);
     }
 
@@ -25,7 +27,7 @@ public class Set {
     }
 
     public void updateGame(Player playerService, Player playerRest) {
-        this.currentGame = gameFactory.createGame(isTieBreak(), playerService, playerRest);
+        this.currentGame = gameController.createGame(isTieBreak(), playerService, playerRest);
         addGame(currentGame);
     }
 

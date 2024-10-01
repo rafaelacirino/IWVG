@@ -3,12 +3,9 @@ package es.upm.game.tennis.view;
 import es.upm.game.tennis.model.Player;
 import es.upm.game.tennis.controller.*;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MatchView {
-
-    private static final Logger logger = Logger.getLogger(MatchView.class.getName());
 
     public String getMatchScore(MatchController matchController) {
         String currentServer = matchController.getMatch().getCurrentSet()
@@ -29,22 +26,16 @@ public class MatchView {
         StringBuilder matchScore = new StringBuilder();
         matchScore.append(String.format("date: %s%n", matchController.getMatch().getDate()))
                   .append(getMatchScore(matchController));
-        if (logger.isLoggable(Level.INFO)) {
-        logger.info(String.format("Init Match:%n%s", matchScore));
-        }
+        Logger.getLogger(MatchView.class.getName()).info(String.format("Init Match:%n%s", matchScore));
     }
 
     public void displayMatchScore(MatchController matchController) {
         String matchScore = getMatchScore(matchController);
-        if (logger.isLoggable(Level.INFO)) {
-            logger.info(String.format("Current Match Score: %s", matchScore));
-        }
+        Logger.getLogger(MatchView.class.getName()).info(String.format("Current Match Score: %s", matchScore));
     }
 
     public void displayMatchResult(MatchController matchController) {
         String matchScore = getMatchScore(matchController);
-        if (logger.isLoggable(Level.INFO)) {
-            logger.info(String.format("Results Match:%n%s", matchScore));
-        }
+        Logger.getLogger(MatchView.class.getName()).info(String.format("Results Match:%n%s", matchScore));
     }
 }

@@ -1,8 +1,5 @@
 package es.upm.game.tennis.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class TieBreakGame extends AbstractGame {
 
     public TieBreakGame(Player playerService, Player playerRest) {
