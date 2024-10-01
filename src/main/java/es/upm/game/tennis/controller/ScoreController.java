@@ -7,51 +7,67 @@ import java.util.logging.Logger;
 public class ScoreController {
 
     private final ScoreBoard scoreBoard;
-    private final IGame game;
+    private final MatchScore matchScore;
+    private AbstractGame currentGame;
 
     private static final Logger logger = Logger.getLogger(ScoreController.class.getName());
 
-    public ScoreController(ScoreBoard scoreBoard, IGame game) {
+    public ScoreController(MatchScore matchScore, AbstractGame currentGame, ScoreBoard scoreBoard) {
+        this.matchScore = matchScore;
+        this.currentGame = currentGame;
         this.scoreBoard = scoreBoard;
-        this.game = game;
     }
 
-    private void checkGameEndAndSwitchRoles() {
-        if (scoreBoard.isGameOver()) {
-            logger.info("Game ball!");
-            game.switchRoles();
-            scoreBoard.resetPoints();
+    private void checkGameEnd() {
+        if (currentGame.isGameOver()) {
+            currentGame.onGameOver();
 
-            if (scoreBoard.isSetOver()) {
-                logger.info("Set ball!");
-                scoreBoard.updateSets(game.isPlayer0Service() ? game.getPlayers().get(0) : game.getPlayers().get(1));
-                scoreBoard.resetGames();
-            }
+            Player winner = currentGame.getPlayers().get(
+                    currentGame.getCurrentPoints()[0] > currentGame.getCurrentPoints()[1] ? 0 : 1
+            );
+
+            scoreBoard.addPoint(winner);
+            checkSetEnd();
         }
     }
 
-    private void scorePoint(Player player) {
-        scoreBoard.updatePoints(player);
-        checkGameEndAndSwitchRoles();
+    private void checkSetEnd() {
+        if (matchScore.getCurrentSet().isSetOver()) {
+            logger.info("¡Set terminado!");
+
+            if (matchScore.isMatchOver()) {
+                logger.info("¡Partido terminado!");
+                return;
+            }
+
+            matchScore.getCurrentSet().resetGames();
+            logger.info("Iniciando nuevo set");
+        }
+    }
+
+    private void resetPoints() {
+        currentGame.resetPoints();
+    }
+
+    public void scorePoint(Player player) {
+        currentGame.addPoint(player);
+        checkGameEnd();
+        currentGame.resetPoints();
     }
 
     public void pointService() {
-        if (game.isPlayer0Service()) {
-            logger.info("Player 0 (Server) scored a point, %s");
-            scorePoint(game.getPlayers().get(0));
+        if (currentGame.isPlayer0Service()) {
+            scorePoint(currentGame.getPlayers().get(0));
         } else {
-            logger.info("Player 1 (Server) scored a point");
-            scorePoint(game.getPlayers().get(1));
+            scorePoint(currentGame.getPlayers().get(1));
         }
     }
 
     public void pointRest() {
-        if (game.isPlayer0Service()) {
-            logger.info("Player 1 (Receiver) scored a point");
-            scorePoint(game.getPlayers().get(1));
+        if (currentGame.isPlayer0Service()) {
+            scorePoint(currentGame.getPlayers().get(1));
         } else {
-            logger.info("Player 0 (Receiver) scored a point");
-            scorePoint(game.getPlayers().get(0));
+            scorePoint(currentGame.getPlayers().get(0));
         }
     }
 
@@ -61,10 +77,10 @@ public class ScoreController {
 
         if (scoreBoard.getServiceFaultCount() >= 2) {
             logger.info("Two consecutive service faults! Point awarded to the receiver.");
-            if (game.isPlayer0Service()) {
-                scorePoint(game.getPlayers().get(1));
+            if (currentGame.isPlayer0Service()) {
+                scorePoint(currentGame.getPlayers().get(1));
             } else {
-                scorePoint(game.getPlayers().get(0));
+                scorePoint(currentGame.getPlayers().get(0));
             }
             scoreBoard.resetServiceFaultCount();
         }

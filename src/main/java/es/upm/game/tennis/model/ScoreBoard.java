@@ -4,99 +4,60 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ScoreBoard {
-
-    private final int[] currentPoints;
-    private final int[][] currentGames;
-    private final int[] currentSets;
-    private int lackServiceCount;
-    private final int totalSets;
+    private final GameScore gameScore;
+    private final MatchScore matchScore;
+    private final FaultScore faultScore;
     private final List<Player> players;
 
     public ScoreBoard(int totalSets, Player playerService, Player playerRest) {
-        this.totalSets = totalSets;
         this.players = new ArrayList<>();
         this.players.add(playerService);
         this.players.add(playerRest);
-        this.currentPoints = new int[]{0, 0};
-        this.currentGames = new int[totalSets][2];
-        this.currentSets = new int[]{0, 0};
-        this.lackServiceCount = 0;
+
+        this.gameScore = new GameScore();
+        this.matchScore = new MatchScore(totalSets);
+        this.faultScore = new FaultScore();
     }
 
-    public int[] getCurrentPoints() {
-        return currentPoints;
+    public MatchScore getMatchScore() {
+        return matchScore;
     }
 
-    public List<Player> getPlayers() {
-        return players;
+    public void addPoint(Player player) {
+        int playerIndex = players.indexOf(player);
+        gameScore.addPoint(playerIndex);
+
+        if (gameScore.isGameOver()) {
+            matchScore.updateGameScore(playerIndex);
+            gameScore.resetPoints();
+        }
     }
 
     public void incrementServiceFault() {
-        lackServiceCount++;
+        faultScore.incrementFault();
     }
 
     public int getServiceFaultCount() {
-        return lackServiceCount;
+        return faultScore.getFaultCount();
     }
 
     public void resetServiceFaultCount() {
-        lackServiceCount = 0;
+        faultScore.resetFaultCount();
     }
 
-    public void updatePoints(Player player) {
-        int playerIndex = players.indexOf(player);
-        currentPoints[playerIndex] += 1;
-
-        if (isGameOver()) {
-            updateGames(player);
-            resetPoints();
-        }
+    public int[] getCurrentPoints() {
+        return gameScore.getPoints();
     }
 
-    public void updateGames(Player player) {
-        int playerIndex = players.indexOf(player);
-        int currentSetIndex = getCurrentSetIndex();
-
-        currentGames[currentSetIndex][playerIndex]++;
-        if (currentGames[currentSetIndex][playerIndex] >= 6 &&
-                (currentGames[currentSetIndex][playerIndex] - currentGames[currentSetIndex][1 - playerIndex]) >= 2) {
-            updateSets(player);
-            resetGames();
-        }
+    public int[] getGamesInCurrentSet() {
+        return matchScore.getCurrentSet().getGamesWon();
     }
 
-    public void updateSets(Player player) {
-        int playerIndex = players.indexOf(player);
-        currentSets[playerIndex]++;
+    public int[] getSetsWon() {
+        return matchScore.getSetsWon();
     }
 
-    public void resetPoints() {
-        currentPoints[0] = 0;
-        currentPoints[1] = 0;
+    public boolean isMatchOver() {
+        return matchScore.isMatchOver();
     }
-
-    public void resetGames() {
-        int currentSetIndex = getCurrentSetIndex();
-
-        if (currentSetIndex < totalSets) {
-            currentGames[currentSetIndex][0] = 0;
-            currentGames[currentSetIndex][1] = 0;
-        }
-    }
-
-    public boolean isGameOver() {
-        return Math.max(currentPoints[0], currentPoints[1]) >= 4 &&
-                Math.abs(currentPoints[0] - currentPoints[1]) >= 2;
-    }
-
-    public boolean isSetOver() {
-        int currentSetIndex = getCurrentSetIndex();
-        return Math.max(currentGames[currentSetIndex][0], currentGames[currentSetIndex][1]) >= 6 &&
-                Math.abs(currentGames[currentSetIndex][0] - currentGames[currentSetIndex][1]) >= 2;
-    }
-
-    private int getCurrentSetIndex() {
-        return currentSets[0] + currentSets[1];
-    }
-
 }
