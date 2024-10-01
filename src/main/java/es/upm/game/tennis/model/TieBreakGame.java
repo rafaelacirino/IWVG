@@ -3,30 +3,15 @@ package es.upm.game.tennis.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TieBreakGame implements IGame {
-    private final List<Player> players;
-    private boolean isPlayer0Service;
+public class TieBreakGame extends AbstractGame {
 
     public TieBreakGame(Player playerService, Player playerRest) {
-        this.players = new ArrayList<>();
-        this.players.add(playerService);
-        this.players.add(playerRest);
-        this.isPlayer0Service = true;
+        super(playerService, playerRest);
     }
 
     @Override
-    public List<Player> getPlayers() {
-        return players;
+    public boolean isGameOver() {
+        return (Math.max(gameScore.getPoints()[0], gameScore.getPoints()[1]) >= 6 &&
+                Math.abs(gameScore.getPoints()[0] - gameScore.getPoints()[1]) >= 2);
     }
-
-    @Override
-    public boolean isPlayer0Service() {
-        return isPlayer0Service;
-    }
-
-    @Override
-    public void switchRoles() {
-        isPlayer0Service = !isPlayer0Service;
-    }
-
 }

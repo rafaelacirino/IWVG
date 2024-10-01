@@ -5,8 +5,8 @@ import java.util.List;
 
 public class Set {
 
-    private IGame currentGame;
-    private final List<IGame> games;
+    private AbstractGame currentGame;
+    private final List<AbstractGame> games;
     private final GameFactory gameFactory;
 
     public Set(Player playerService, Player playerRest) {
@@ -16,11 +16,11 @@ public class Set {
         this.games.add(currentGame);
     }
 
-    public IGame getCurrentGame() {
+    public AbstractGame getCurrentGame() {
         return currentGame;
     }
 
-    public void addGame(IGame game) {
+    public void addGame(AbstractGame game) {
         games.add(game);
     }
 
@@ -30,7 +30,7 @@ public class Set {
     }
 
     private boolean isTieBreak() {
-        int player1Games = (int) games.stream().filter(IGame::isPlayer0Service).count();
+        int player1Games = (int) games.stream().filter(AbstractGame::isPlayer0Service).count();
         int player2Games = games.size() - player1Games;
 
         return player1Games == 6 && player2Games == 6;

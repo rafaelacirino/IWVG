@@ -17,7 +17,7 @@ public class MatchController {
         Player playerRest = (playerService == playerCurrent) ? playerPast : playerService;
         match = new Match(totalSets, playerService, playerRest);
 
-        scoreController = new ScoreController(match.getScoreBoard(), match.getCurrentSet().getCurrentGame());
+        scoreController = new ScoreController(match.getScoreBoard().getMatchScore(), match.getCurrentSet().getCurrentGame(), match.getScoreBoard());
     }
 
     public Match getMatch() {
