@@ -1,8 +1,8 @@
 package es.upm.game.tennis.controller;
 
 import es.upm.game.tennis.model.Player;
+import es.upm.game.tennis.model.Referee;
 import es.upm.game.tennis.utils.ConstantsUtil;
-import es.upm.game.tennis.view.CommandHandler;
 import es.upm.game.tennis.view.MatchView;
 import es.upm.game.tennis.view.PlayerView;
 import es.upm.game.tennis.view.RefereeView;
@@ -23,7 +23,8 @@ public class CommandController {
     private boolean isLoggedIn = false;
     private final Scanner scanner = new Scanner(System.in);
 
-    public CommandController(MatchController matchController, MatchView matchView, RefereeController refereeController, PlayerController playerController) {
+    public CommandController(MatchController matchController, MatchView matchView, RefereeController refereeController,
+                             PlayerController playerController) {
         this.matchController = matchController;
         this.matchView = matchView;
         this.refereeController = refereeController;
@@ -31,18 +32,26 @@ public class CommandController {
     }
 
     public String getInput(String promptMessage) {
-        Logger.getLogger(CommandHandler.class.getName()).info(promptMessage);
+        Logger.getLogger(CommandController.class.getName()).info(promptMessage);
         return scanner.nextLine();
     }
 
     public int getInputNumber(String promptMessage) {
-        Logger.getLogger(CommandHandler.class.getName()).info(promptMessage);
+        Logger.getLogger(CommandController.class.getName()).info(promptMessage);
         int number = scanner.nextInt();
         scanner.nextLine();
         return number;
     }
 
-    public void login(){
+    public void createReferee() {
+        RefereeView refereeView = new RefereeView();
+        String refName = getInput(ConstantsUtil.REFEREE_NAME);
+        String refPassword = getInput(ConstantsUtil.REFEREE_PASSWORD);
+        Referee referee = refereeController.createReferee(refName, refPassword);
+        refereeView.displayRefereeCreated(referee);
+    }
+
+    public void login() {
         RefereeView refereeView = new RefereeView();
         String loginName = getInput(ConstantsUtil.REFEREE_NAME);
         String loginPassword = getInput(ConstantsUtil.REFEREE_PASSWORD);
@@ -50,32 +59,32 @@ public class CommandController {
         refereeView.displayLoginStatus(isLoggedIn);
     }
 
-    public void createPlayer(){
+    public void createPlayer() {
         PlayerView playerView = new PlayerView();
         String playerName = getInput(ConstantsUtil.PLAYER_NAME);
         playerView.displayPlayerCreated(playerController.createPlayer(playerName));
     }
 
-    public void readPlayer(){
+    public void readPlayer() {
         int playerId = getInputNumber(ConstantsUtil.PLAYER_ID);
         Optional<Player> foundPlayer = playerController.getPlayerById(playerId);
 
         foundPlayer.ifPresentOrElse(
-                p -> Logger.getLogger(CommandHandler.class.getName()).info("Player ID: " + p.getId() + ", Name: " + p.getName()),
-                () -> Logger.getLogger(CommandHandler.class.getName()).warning(ConstantsUtil.PLAYER_NOT_FOUND)
+                p -> Logger.getLogger(CommandController.class.getName()).info("Player ID: " + p.getId() + ", Name: " + p.getName()),
+                () -> Logger.getLogger(CommandController.class.getName()).warning(ConstantsUtil.PLAYER_NOT_FOUND)
         );
     }
 
     public void readPlayers() {
         List<Player> players = playerController.getPlayers();
         for (Player p : players) {
-            Logger.getLogger(CommandHandler.class.getName()).info("Player ID: " + p.getId() + ", Name: " + p.getName());
+            Logger.getLogger(CommandController.class.getName()).info("Player ID: " + p.getId() + ", Name: " + p.getName());
         }
     }
 
-    public void createMatch(){
+    public void createMatch() {
         if (!isLoggedIn) {
-            Logger.getLogger(CommandHandler.class.getName()).warning(ConstantsUtil.NO_REFEREE_LOGGED_IN);
+            Logger.getLogger(CommandController.class.getName()).warning(ConstantsUtil.NO_REFEREE_LOGGED_IN);
             return;
         }
 
@@ -91,21 +100,20 @@ public class CommandController {
             matchView.displayInitialMatch(matchController);
             isMatchCreated = true;
         } else {
-            Logger.getLogger(CommandHandler.class.getName()).warning(ConstantsUtil.PLAYERS_NOT_FOUND);
+            Logger.getLogger(CommandController.class.getName()).warning(ConstantsUtil.PLAYERS_NOT_FOUND);
         }
     }
 
     public void handleMatchAction(String command) {
         if (!isMatchCreated) {
-            Logger.getLogger(CommandHandler.class.getName()).warning(ConstantsUtil.MATCH_BEFORE_ADDING_POINTS);
+            Logger.getLogger(CommandController.class.getName()).warning(ConstantsUtil.MATCH_BEFORE_ADDING_POINTS);
             return;
         }
-        if ("lackService".equals(command)) {
-            matchController.lackService();
-        } else if ("pointService".equals(command)) {
-            matchController.pointService();
-        } else if ("pointRest".equals(command)) {
-            matchController.pointRest();
+        switch (command) {
+            case "lackService" -> matchController.lackService();
+            case "pointService" -> matchController.pointService();
+            case "pointRest" -> matchController.pointRest();
+            default -> System.out.println("Unknown command: " + command);
         }
         matchView.displayMatchScore(matchController);
     }

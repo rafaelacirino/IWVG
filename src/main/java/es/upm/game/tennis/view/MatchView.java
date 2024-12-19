@@ -16,10 +16,12 @@ public class MatchView {
         Player player1 = matchController.getMatch().getCurrentSet().getCurrentGame().getPlayers().get(0);
         Player player2 = matchController.getMatch().getCurrentSet().getCurrentGame().getPlayers().get(1);
 
-        return String.format("%n%s %s: %s%n", currentServer, player1.getName(), matchController.getMatch()
-                        .getScoreBoard().getCurrentPoints()[0]) +
-               String.format("%s %s: %s%n", currentReceiver, player2.getName(), matchController.getMatch()
-                        .getScoreBoard().getCurrentPoints()[1]);
+        int[] points = matchController.getMatch().getScoreBoard().getCurrentPoints();
+
+        return String.format("%n%s %s: %d%n",
+                currentServer, player1.getName(), points[0]) +
+               String.format("%s %s: %d%n",
+                currentReceiver, player2.getName(), points[1]);
     }
 
     public void displayInitialMatch(MatchController matchController) {
@@ -31,11 +33,6 @@ public class MatchView {
 
     public void displayMatchScore(MatchController matchController) {
         String matchScore = getMatchScore(matchController);
-        Logger.getLogger(MatchView.class.getName()).info(String.format("Current Match Score: %s", matchScore));
-    }
-
-    public void displayMatchResult(MatchController matchController) {
-        String matchScore = getMatchScore(matchController);
-        Logger.getLogger(MatchView.class.getName()).info(String.format("Results Match:%n%s", matchScore));
+        Logger.getLogger(MatchView.class.getName()).info(String.format("Current Match Score:%n%s", matchScore));
     }
 }

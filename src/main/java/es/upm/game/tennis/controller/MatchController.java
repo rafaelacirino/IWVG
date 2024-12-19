@@ -15,7 +15,7 @@ public class MatchController {
         Player playerService = Math.random() < 0.5 ? playerCurrent : playerPast;
         Player playerRest = (playerService == playerCurrent) ? playerPast : playerService;
         match = new Match(totalSets, playerService, playerRest);
-        scoreController = new ScoreController(match.getScoreBoard().getMatchScore(), match.getCurrentSet().getCurrentGame(), match.getScoreBoard());
+        scoreController = new ScoreController(match.getCurrentSet().getCurrentGame(), match.getScoreBoard());
     }
 
     public Match getMatch() {

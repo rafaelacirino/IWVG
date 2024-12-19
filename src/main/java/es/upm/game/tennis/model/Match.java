@@ -17,7 +17,10 @@ public class Match {
     }
 
     public Match(int totalSets, Player playerService, Player playerRest) {
-        assert totalSets == 3 || totalSets == 5 : "Total sets must be 3 or 5";
+        if (totalSets != 3 && totalSets != 5) {
+            System.err.println("Error: total sets must be 3 or 5. Defaulting to 3");
+            totalSets = 3;
+        }
         this.totalSets = totalSets;
         this.date = new Date();
         this.sets = new ArrayList<>(totalSets);

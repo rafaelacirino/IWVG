@@ -8,6 +8,7 @@ public class StandardGame extends AbstractGame {
 
     @Override
     public boolean isGameOver() {
-        return gameScore.isGameOver();
+        return (Math.max(gameScore.getPoints()[0], gameScore.getPoints()[1]) >= 4 &&
+                Math.abs(gameScore.getPoints()[0] - gameScore.getPoints()[1]) >= 2);
     }
 }

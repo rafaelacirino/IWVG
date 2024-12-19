@@ -9,6 +9,7 @@
 ![DiagramDomainModel](/docs/diagrams/DomainModel.svg)
 
 ## Diagrama de Clases
+
 ![DiagramClass](/docs/diagrams/ClassDiagram.svg)
 
 ## Diagrama del Patrón MVC

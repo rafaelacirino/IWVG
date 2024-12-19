@@ -1,9 +1,5 @@
 package es.upm.game.tennis.utils;
 
-import es.upm.game.tennis.Main;
-
-import java.util.logging.Logger;
-
 public final class ConstantsUtil {
 
     public static final String REFEREE_NAME = "Enter referee name: ";

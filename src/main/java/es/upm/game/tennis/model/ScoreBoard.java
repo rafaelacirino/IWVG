@@ -19,18 +19,9 @@ public class ScoreBoard {
         this.faultScore = new FaultScore();
     }
 
-    public MatchScore getMatchScore() {
-        return matchScore;
-    }
-
     public void addPoint(Player player) {
         int playerIndex = players.indexOf(player);
         gameScore.addPoint(playerIndex);
-
-        if (gameScore.isGameOver()) {
-            matchScore.updateGameScore(playerIndex);
-            gameScore.resetPoints();
-        }
     }
 
     public void incrementServiceFault() {
@@ -47,17 +38,5 @@ public class ScoreBoard {
 
     public int[] getCurrentPoints() {
         return gameScore.getPoints();
-    }
-
-    public int[] getGamesInCurrentSet() {
-        return matchScore.getCurrentSet().getGamesWon();
-    }
-
-    public int[] getSetsWon() {
-        return matchScore.getSetsWon();
-    }
-
-    public boolean isMatchOver() {
-        return matchScore.isMatchOver();
     }
 }

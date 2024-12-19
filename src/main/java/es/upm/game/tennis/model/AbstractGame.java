@@ -9,7 +9,7 @@ public abstract class AbstractGame {
     protected boolean isPlayer0Service;
     protected final GameScore gameScore;
 
-    public AbstractGame(Player playerService, Player playerRest) {
+    protected AbstractGame(Player playerService, Player playerRest) {
         this.players = List.of(playerService, playerRest);
         this.isPlayer0Service = true;
         this.gameScore = new GameScore();
@@ -21,24 +21,6 @@ public abstract class AbstractGame {
 
     public boolean isPlayer0Service() {
         return isPlayer0Service;
-    }
-
-    public void switchRoles() {
-        isPlayer0Service = !isPlayer0Service;
-    }
-
-    public void addPoint(Player player) {
-        int playerIndex = players.indexOf(player);
-        gameScore.addPoint(playerIndex);
-
-        if (isGameOver()) {
-            onGameOver();
-            gameScore.resetPoints();
-        }
-    }
-
-    public int[] getCurrentPoints() {
-        return gameScore.getPoints();
     }
 
     public void resetPoints() {
